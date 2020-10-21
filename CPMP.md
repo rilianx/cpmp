@@ -1,9 +1,15 @@
----
+<!DOCTYPE html>
+<html>
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPMP</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
 
----
-
-<h1 id="a-new-heuristic-for-the-cpmp">A new heuristic for the CPMP</h1>
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="a-new-heuristic-for-the-cpmp">A new heuristic for the CPMP</h1>
 <p>We propose a greedy algorithm for solving the CPMP. Basically, it first attempts to fill sorted stacks by placing badly placed containers from other stacks. Then, if the process cannot continue, an unsorted stack is dismantled by taking some containers from the top and placing them in other stacks. The process is repeated until, hopefully, a feasible solution is reached.</p>
 <blockquote>
 <p><a href="https://docs.google.com/document/d/19i8cvyYD3IsFTQrs6SQyTqr043KoxJxK2Kl0tMoVltM/edit">DOC gdrive</a> ∙ <a href="https://drive.google.com/drive/folders/1bXaWCK-xQXLkw74nDdn1W30IK-5RwTeX">Carpeta gdrive</a> ∙ <a href="https://www.overleaf.com/project/5ea1e67e2e5d5d00016a6bdf">Paper (Overleaf)</a> ∙  <a href="https://github.com/rilianx/cpmp/">github</a> ∙ <a href="https://raw.githubusercontent.com/rilianx/cpmp/main/SDpp.ipynb">Jupyter notebook</a></p>
@@ -42,4 +48,7 @@ Además, cada vez que un elemento con group value <span class="katex--inline"><s
 <blockquote>
 <p>Para evitar quedarnos con pocos stack para intercambios, se puede considerar un límite de llenado.</p>
 </blockquote>
+</div>
+</body>
 
+</html>
