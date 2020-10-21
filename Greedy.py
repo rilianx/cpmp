@@ -1,0 +1,64 @@
+import Layout 
+
+def SF_move(layout, s_d=None):
+    s_o = None
+    s_d = None
+    min_dif = 10000
+    for i in range(len(layout.stacks)):
+        if(layout.is_sorted_stack(i) and len(layout.stacks[i]) < layout.H):
+            top = Layout.gvalue(layout.stacks[i])
+            for k in range(len(layout.stacks)):
+                if k!=i and not layout.is_sorted_stack(k):
+                    if layout.stacks[k][-1] <= top and (top - layout.stacks[k][-1]) < min_dif:
+                        min_dif = top - layout.stacks[k][-1]
+                        s_d=i; s_o = k
+    if s_o != None: 
+        layout.move(s_o,s_d)
+        return True
+    return False
+
+def SF_move_d(layout, s_d):
+    s_o = None
+    min_dif = 10000
+    if(layout.is_sorted_stack(s_d) and len(layout.stacks[s_d]) < layout.H):
+        top = Layout.gvalue(layout.stacks[s_d])
+        for k in range(len(layout.stacks)):
+            if k!=s_d and not layout.is_sorted_stack(k):
+                if layout.stacks[k][-1] <= top and (top - layout.stacks[k][-1]) < min_dif:
+                    min_dif = top - layout.stacks[k][-1]
+                    s_o = k
+    if s_o != None: 
+        layout.move(s_o,s_d)
+        return True
+    return False
+
+
+def SD_move(layout):
+    best_ev = 0
+    for i in range(len(layout.stacks)):
+        prom = sum(layout.stacks[i]) / len(layout.stacks[i]) 
+        ev = 10000 - 100*len(layout.stacks[i]) - prom
+        if ev > best_ev:
+            best_ev = ev
+            s_o = i
+            
+    while len(layout.stacks[s_o])>0:
+        s_d = select_destination_stack(layout,s_o)
+        layout.move(s_o,s_d)
+        if reachable_height(layout,s_o)==layout.H: return    
+        
+def greedy_solve(layout):
+    while layout.unsorted_stacks>0:
+        if not SF_move(layout):
+            SD_move(layout)
+        if layout.steps>1000: return 1000
+    return layout.steps
+
+def lazy_greedy(layout):
+    while layout.unsorted_stacks>0:
+        if not SF_move(layout): return
+        
+def solve_file(file,H):
+    layout = read_file(file,H)
+    greedy_solve(layout)
+    return layout
