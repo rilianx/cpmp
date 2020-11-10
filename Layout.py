@@ -215,3 +215,14 @@ def reachable_height(layout, i):
     if all_stacks: return layout.H
     else: return h
     
+def read_file(file, H):
+    with open(file) as f:
+        S, C = [int(x) for x in next(f).split()] # read first line
+        stacks = []
+        for line in f: # read rest of lines
+            stack = [int(x) for x in line.split()[1::]]
+            #if stack[0] == 0: stack.pop()
+            stacks.append(stack)
+            
+        layout = Layout(stacks,H)
+    return layout
