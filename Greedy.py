@@ -1,4 +1,4 @@
-import Layout 
+from . import Layout 
 
 def SF_move(layout, pos=0):
     s_o = None
@@ -53,7 +53,9 @@ def SD_move(layout, pos=0):
         ev, s_o = actions[pos]
         s_d = Layout.select_destination_stack(layout,s_o)
         layout.move(s_o,s_d)
-        if Layout.reachable_height(layout,s_o)==layout.H: return    
+        if Layout.reachable_height(layout,s_o)==layout.H: return True, len(actions)
+        
+    return True, len(actions)
         
 def greedy_solve(layout):
     while layout.unsorted_stacks>0:
@@ -72,6 +74,7 @@ def solve_file(file,H):
     return layout
 
 def simulation(layout, actions, min_action=0):
+    nb_actions=0
     for a in actions:
         a -= min_action
         if layout.unsorted_stacks==0: break
@@ -80,8 +83,8 @@ def simulation(layout, actions, min_action=0):
         if ret==False and nb_actions>0: a=0
         
         if not ret and nb_actions==0:
-            ret = SD_move(layout,a)
+            ret, nb_actions = SD_move(layout,a)
             if ret ==False: SD_move(layout,0)
     
     greedy_solve(layout)
-    return layout.steps
+    return layout.steps, nb_actions
