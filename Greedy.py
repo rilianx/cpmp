@@ -71,8 +71,9 @@ def solve_file(file,H):
     greedy_solve(layout)
     return layout
 
-def simulation(layout, actions):
+def simulation(layout, actions, min_action=0):
     for a in actions:
+        a -= min_action
         if layout.unsorted_stacks==0: break
         
         ret, nb_actions = SF_move(layout,a)
