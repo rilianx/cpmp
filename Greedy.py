@@ -48,7 +48,7 @@ def SD_move(layout, pos=0):
             s_o = i
     
     actions.sort()
-    if len(actions)<pos : return False
+    if len(actions)<=pos : return False
     while len(layout.stacks[s_o])>0:
         ev, s_o = actions[pos]
         s_d = Layout.select_destination_stack(layout,s_o)
@@ -80,11 +80,11 @@ def simulation(layout, actions, min_action=0):
         if layout.unsorted_stacks==0: break
         
         ret, nb_actions = SF_move(layout,a)
-        if ret==False and nb_actions>0: a=0
+        if ret==False and nb_actions>0: return False
         
         if not ret and nb_actions==0:
             ret, nb_actions = SD_move(layout,a)
-            if ret ==False: SD_move(layout,0)
+            if ret ==False: return False
     
     greedy_solve(layout)
     return layout.steps, nb_actions
