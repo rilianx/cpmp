@@ -1,18 +1,20 @@
 import Layout 
 
-def SF_move(layout, s_d=None):
+def SF_move(layout, pos=0):
     s_o = None
     s_d = None
     min_dif = 10000
+    actions = []
     for i in range(len(layout.stacks)):
         if(layout.is_sorted_stack(i) and len(layout.stacks[i]) < layout.H):
             top = Layout.gvalue(layout.stacks[i])
             for k in range(len(layout.stacks)):
                 if k!=i and not layout.is_sorted_stack(k):
-                    if layout.stacks[k][-1] <= top and (top - layout.stacks[k][-1]) < min_dif:
-                        min_dif = top - layout.stacks[k][-1]
-                        s_d=i; s_o = k
-    if s_o != None: 
+                    if layout.stacks[k][-1] <= top :
+                        actions.append( (top - layout.stacks[k][-1], k, i))
+    actions.sort()
+    if len(actions)>pos: 
+        min_df, s_o, s_d = actions[pos]
         layout.move(s_o,s_d)
         return True
     return False
