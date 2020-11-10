@@ -16,8 +16,8 @@ def SF_move(layout, pos=0):
     if len(actions)>pos: 
         min_df, s_o, s_d = actions[pos]
         layout.move(s_o,s_d)
-        return True
-    return False
+        return True, len(actions)
+    return False, len(actions)
 
 def SF_move_d(layout, s_d):
     s_o = None
@@ -35,23 +35,29 @@ def SF_move_d(layout, s_d):
     return False
 
 
-def SD_move(layout):
+def SD_move(layout, pos=0):
     best_ev = 0
+    actions = []
     for i in range(len(layout.stacks)):
         prom = sum(layout.stacks[i]) / len(layout.stacks[i]) 
         ev = 10000 - 100*len(layout.stacks[i]) - prom
+        
+        actions.append( (-ev, i))
         if ev > best_ev:
             best_ev = ev
             s_o = i
-            
+    
+    actions.sort()
+    if len(actions)<pos : return False
     while len(layout.stacks[s_o])>0:
-        s_d = select_destination_stack(layout,s_o)
+        ev, s_o = actions[pos]
+        s_d = Layout.select_destination_stack(layout,s_o)
         layout.move(s_o,s_d)
-        if reachable_height(layout,s_o)==layout.H: return    
+        if Layout.reachable_height(layout,s_o)==layout.H: return    
         
 def greedy_solve(layout):
     while layout.unsorted_stacks>0:
-        if not SF_move(layout):
+        if not SF_move(layout)[0]:
             SD_move(layout)
         if layout.steps>1000: return 1000
     return layout.steps
@@ -64,3 +70,17 @@ def solve_file(file,H):
     layout = read_file(file,H)
     greedy_solve(layout)
     return layout
+
+def simulation(layout, actions):
+    for a in actions:
+        if layout.unsorted_stacks==0: break
+        
+        ret, nb_actions = SF_move(layout,a)
+        if ret==False and nb_actions>0: a=0
+        
+        if not ret and nb_actions==0:
+            ret = SD_move(layout,a)
+            if ret ==False: SD_move(layout,0)
+    
+    greedy_solve(layout)
+    return layout.steps
