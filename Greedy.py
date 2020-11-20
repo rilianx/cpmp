@@ -1,4 +1,4 @@
-from . import Layout 
+import Layout 
 
 def SF_move(layout, pos=0):
     s_o = None
