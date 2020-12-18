@@ -152,7 +152,52 @@ def remove_until(column):
             
         contador+=1
 
+def showtime(path):
+    layout=read(path)
+    #print ("Estado inicial: ")
+    #for s in layout.stacks:
+    #    print(s)
+    #print()
+    seleccionada = select_col(layout)
+ 
+    while seleccionada != -1:
+        print("SELECCIONADA:", seleccionada)
+        #Se calcula cuantos contenedores deben retirarse
+        columna=copy.deepcopy(layout.stacks[seleccionada])
+        retirar = remove_until(columna)
 
+        #Se calculan los ranks
+        rank = ranks(layout.stacks[seleccionada])
+
+        #Se retiran los elementos de la columna
+        SDpp(layout, seleccionada, rank,retirar)
+        for s in layout.stacks:
+            print(s)
+        print("\n")
+
+        #Se quitan los contenedores que se mantuvieron en su lugar para que no tire error la siguiente funcion
+        for item in layout.stacks[seleccionada]:
+            rank.pop(item, None)
+
+
+        SFpp(layout,seleccionada,rank,retirar)
+        for s in layout.stacks:
+            print(s)
+        print("\n")
+
+        #Se vuelve a seleccionar una columna
+        seleccionada = select_col(layout)
+
+
+
+        #print(layout.stacks)
+    #print("Estado final")
+    #for s in layout.stacks:
+        #print(s)
+    #print()
+    #print("Movimientos")
+    print("SELECCIONADA:", seleccionada)
+    print(len(layout.moves),"\t",layout.unsorted_stacks)
 
 def solve(path):
     layout=read(path)
@@ -195,8 +240,8 @@ def solve(path):
         #print(s)
     #print()
     #print("Movimientos")
-    print(len(layout.moves))
-
+    print(len(layout.moves),"\t",layout.unsorted_stacks)
+ 
 
 def SDpp(layout, s_o, rank,quitar):
     capac = capacity(layout,s_o) # espacio libre
@@ -252,3 +297,147 @@ def SFpp(layout, s_d, rank, n):
     while cont < n:
         Greedy.SF_move_d(layout, s_d)
         cont += 1
+
+#SELECT SEMI RANDOM COLUMN
+def SSRC(layout):
+    
+    size=len(layout.stacks)
+    best=-1000000000
+    select=-1
+    
+    posibles = []
+
+    for i in range (0,size):
+
+        aux = layout.is_sorted_stack(i)
+
+        if aux == False:
+            posibles.append(i)
+
+    #Me di cuenta que con el que mayor problemas tiene tenemos menos problemas (necesita menos espacio al contrario del que tenga menos problemas)
+
+    #Si no hay posibles se retorna -1 
+    if len(posibles) == 0:
+        return -1    
+    
+    #En casoq ue si hay posibles
+    
+    for i in posibles:
+        aux = comparacion(layout.stacks[i])
+        if aux > best:
+            best = aux
+            select = i 
+    return select   
+    
+def comparacion(stack):
+    sort=copy.deepcopy(stack)
+    sort.sort(reverse=True)
+    copia=copy.deepcopy(stack)
+
+    contador = 0
+
+    while sort != copia:
+
+        sort.pop(len(sort)-1)
+        copia.pop(len(copia)-1)
+        contador += 1
+
+
+    return contador
+
+
+    
+    
+def showtime2(path):
+    layout=read(path)
+    #print ("Estado inicial: ")
+    #for s in layout.stacks:
+    #    print(s)
+    #print()
+    seleccionada = SSRC(layout)
+ 
+    while seleccionada != -1:
+        print("SELECCIONADA:", seleccionada)
+        #Se calcula cuantos contenedores deben retirarse
+        columna=copy.deepcopy(layout.stacks[seleccionada])
+        retirar = remove_until(columna)
+
+        #Se calculan los ranks
+        rank = ranks(layout.stacks[seleccionada])
+
+        #Se retiran los elementos de la columna
+        SDpp(layout, seleccionada, rank,retirar)
+        for s in layout.stacks:
+            print(s)
+        print("\n")
+
+        #Se quitan los contenedores que se mantuvieron en su lugar para que no tire error la siguiente funcion
+        for item in layout.stacks[seleccionada]:
+            rank.pop(item, None)
+
+
+        SFpp(layout,seleccionada,rank,retirar)
+        for s in layout.stacks:
+            print(s)
+        print("\n")
+
+        #Se vuelve a seleccionar una columna
+        seleccionada = SSRC(layout)
+
+
+
+        #print(layout.stacks)
+    #print("Estado final")
+    #for s in layout.stacks:
+        #print(s)
+    #print()
+    #print("Movimientos")
+    print("SELECCIONADA:", seleccionada)
+    print(len(layout.moves),"\t",layout.unsorted_stacks)
+    print()
+
+from timeit import timeit
+
+def solve2(path):
+    layout=read(path)
+    #print ("Estado inicial: ")
+    #for s in layout.stacks:
+    #    print(s)
+    #print()
+    seleccionada = SSRC(layout)
+ 
+    while seleccionada != -1:
+        #Se calcula cuantos contenedores deben retirarse
+        columna=copy.deepcopy(layout.stacks[seleccionada])
+        retirar = remove_until(columna)
+
+        #Se calculan los ranks
+        rank = ranks(layout.stacks[seleccionada])
+
+        #Se retiran los elementos de la columna
+        SDpp(layout, seleccionada, rank,retirar)
+        #for s in layout.stacks:
+        #    print(s)
+        #print("\n")
+
+        #Se quitan los contenedores que se mantuvieron en su lugar para que no tire error la siguiente funcion
+        for item in layout.stacks[seleccionada]:
+            rank.pop(item, None)
+
+
+        SFpp(layout,seleccionada,rank,retirar)
+        #for s in layout.stacks:
+        #    print(s)
+        #print("\n")
+
+        #Se vuelve a seleccionar una columna
+        seleccionada = SSRC(layout)
+
+        #print(layout.stacks)
+    #print("Estado final")
+    #for s in layout.stacks:
+        #print(s)
+    #print()
+    #print("Movimientos")
+    print(str(len(layout.moves))+"\t"+str(layout.unsorted_stacks))
+
