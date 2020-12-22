@@ -1,4 +1,5 @@
 import Layout 
+import numpy as np
 
 def SF_move(layout, pos=0):
     s_o = None
@@ -56,7 +57,62 @@ def SD_move(layout, pos=0):
         if Layout.reachable_height(layout,s_o)==layout.H: return True, len(actions)
         
     return True, len(actions)
-        
+
+# #Pixies' get_ranks
+# def get_ranks(stack):
+#     s = sorted(stack, reverse=True)
+#     temp= {}
+#     r=1
+#     for n in s:
+#         temp[n] = r
+#         r += 1
+#     return temp
+
+def get_ranks(stack):
+    r=1
+    rank = {}
+    for i in sorted(stack, reverse=True):
+        rank[i] = r
+        r += 1
+    return rank
+
+def fill_stack(layout, s_d, n, ori, rank):
+    for i in range(n):
+        s_o = Layout.select_origin_stack(layout, s_d, ori, rank)
+        layout.move(s_o,s_d)
+
+
+def capacity(layout, s_o):
+    capacity = 0
+    for i in range(len(layout.stacks)):
+        if i==s_o: continue
+        capacity += layout.H - len(layout.stacks[i])
+    return capacity            
+
+#intenta mover el contenedor s_o[pos] al stack s_d
+def force_move(layout, s_o, pos, s_d): #pixie
+    while pos<-1:
+        s_tmp = Layout.select_destination_stack(layout, s_o, black_list=[s_d])
+        if s_tmp==None: return None
+        layout.move(s_o,s_tmp)
+        pos += 1
+    return layout.move(s_o,s_d)
+
+def search_highest(layout, c, ub, s_d):
+    ret = None
+    for pos in range(-1,-10,-1):
+        max_c = 0
+        for s in range(len(layout.stacks)):
+            if s==s_d: continue
+            ss = layout.stacks[s]
+            if len(ss) < -pos: continue
+            if ss[pos]>=c and ss[pos]<=ub and ss[pos]>max_c: 
+                max_c=ss[pos]
+                ret= (s,pos)
+        if ret != None: return ret
+    return None
+
+
 def greedy_solve(layout):
     while layout.unsorted_stacks>0:
         if not SF_move(layout)[0]:
