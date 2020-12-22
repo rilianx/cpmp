@@ -47,8 +47,8 @@ def SD_move(layout, pos=0):
         if ev > best_ev:
             best_ev = ev
             s_o = i
-    
     actions.sort()
+    
     if len(actions)<=pos : return False
     while len(layout.stacks[s_o])>0:
         ev, s_o = actions[pos]

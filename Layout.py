@@ -140,7 +140,7 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100):
               ev = top_d
             elif layout.is_sorted_stack(dest):
               #sorted with minimal top_d
-              ev = -100 - top_d
+              ev = -100 - len(s_d) #- top_d
             else:
               #unsorted with minimal numer of auxiliary stacks
               ev = -10000 #+ required_stacks(dest)
