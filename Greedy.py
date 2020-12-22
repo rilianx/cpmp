@@ -82,18 +82,24 @@ def fill_stack(layout, s_d, n, ori, rank):
         layout.move(s_o,s_d)
 
 
-def capacity(layout, s_o):
+def capacity(layout, s_o, s_d=None):
     capacity = 0
     for i in range(len(layout.stacks)):
-        if i==s_o: continue
+        if i==s_o or i==s_d: continue
         capacity += layout.H - len(layout.stacks[i])
     return capacity            
 
 #intenta mover el contenedor s_o[pos] al stack s_d
 def force_move(layout, s_o, pos, s_d): #pixie
+    rem_elems=-pos-1
+    if capacity(layout,s_o,s_d) < rem_elems : return None
     while pos<-1:
         s_tmp = Layout.select_destination_stack(layout, s_o, black_list=[s_d])
-        if s_tmp==None: return None
+        
+        if s_tmp==None: 
+            print(layout.stacks)
+            print(s_o, s_d, s_tmp)
+            return None
         layout.move(s_o,s_tmp)
         pos += 1
     return layout.move(s_o,s_d)
