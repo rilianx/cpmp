@@ -128,7 +128,8 @@ def greedy_solve(layout):
 
 def lazy_greedy(layout):
     while layout.unsorted_stacks>0:
-        if not SF_move(layout): return
+        success, __ = SF_move(layout)
+        if not success: return
         
 def solve_file(file,H):
     layout = read_file(file,H)
