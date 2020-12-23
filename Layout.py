@@ -116,7 +116,7 @@ def read_file(file, H):
         layout = Layout(stacks,H)
     return layout
 
-def select_destination_stack(layout, orig, black_list=[], max_pos=100):
+def select_destination_stack(layout, orig, black_list=[], max_pos=100, rank=[]):
     s_o = layout.stacks[orig]
     c = s_o[-1]
     best_eval=-1000000;
@@ -143,10 +143,12 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100):
               ev = -100 - len(s_d) #- top_d
             else:
               #unsorted with minimal numer of auxiliary stacks
-              ev = -10000 #+ required_stacks(dest)
+              ev = -10000  
+              #penaliza en caso de que haya un elemento rank debajo
+              if top_d in rank: ev -= 50*(top_d-c)
             
             if layout.H - len(s_d) > max_pos:
-              ev -= 10000
+              ev -= 100000
 
             if ev > best_eval:
                 best_eval=ev
