@@ -134,7 +134,7 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100, rank=[]):
 
             if layout.is_sorted_stack(dest) and c<=top_d:
               #c can be well-placed: the sorted stack minimizing top_d is preferred.
-              ev = 10000 - 100*top_d
+              ev = 100000 - 100*top_d
             elif not layout.is_sorted_stack(dest) and c>=top_d:
               #unsorted stack with c>=top_d maximizing top_d is preferred
               ev = top_d
