@@ -9,25 +9,42 @@ using namespace std;
 using namespace cpmp;
 
 namespace cpmp {
-    void generate_candidates(const Layout& lay, list<Layout>& C){
+    void generate_candidates(const Layout& lay, list<Layout>& C, int type){
         
-        for(int s_o=0; s_o < lay.size(); s_o++){
-            if (lay.stacks[s_o].size() == 0) continue;
-            
+        if(type==ATOMIC_MOVE){
+            for(int s_o=0; s_o < lay.size(); s_o++){
+                if (lay.stacks[s_o].size() == 0) continue;
+                
+                Layout clay = lay;
+                bool success = atomic_move(clay,s_o);
+                if (success)
+                    C.push_back(clay);
+            }
             Layout clay = lay;
-            bool success = atomic_move(clay,s_o);
-            if (success)
-                C.push_back(clay);
-            
+            iter_greedy(clay);
+            C.push_back(clay);
         }
-        
-        Layout clay = lay;
-        iter_greedy(clay);
-        C.push_back(clay);
 
+        if(type==SD_MOVE){
+            for(int s_o=0; s_o < lay.size(); s_o++){
+                if (lay.stacks[s_o].size() == 0) continue;
+                
+                Layout clay = lay;
+                bool success = SD_move(clay,s_o);
+                if (success)
+                    C.push_back(clay);
+            }
+            Layout clay = lay;
+            lazy_greedy(clay);
+            if(clay.steps > lay.steps)
+                C.push_back(clay);
+        }
+
+        
+        
     }
 
-    int BSG(Layout& layout, int w){
+    int BSG(Layout& layout, int w, int type){
         int min_steps=200;
         list<Layout> S;
         S.push_back(layout);
@@ -36,7 +53,7 @@ namespace cpmp {
            
             for(Layout& lay:S) {
                 //lay.print();
-                generate_candidates(lay, C);
+                generate_candidates(lay, C, type);
             }
             
 

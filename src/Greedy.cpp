@@ -55,6 +55,9 @@ pair<int,int> _SF_move(Layout& layout, int pos){
 int select_dismantling_stack(Layout& layout){
     double best_ev = 0.0; int s_o=-1;
     for (int i=0;i<layout.size(); i++){
+        if(layout.dismantled_stacks.find(i) != layout.dismantled_stacks.end()) 
+            continue; /* the stack was dismantled before */
+
         double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
         double ev = 100000.0 - 100*layout.stacks[i].size() - prom;
     
@@ -68,10 +71,14 @@ int select_dismantling_stack(Layout& layout){
 }
 
 bool SD_move(Layout& layout, int s_o){
+    if( layout.dismantled_stacks.find(s_o) != layout.dismantled_stacks.end() ) 
+        return false; /* the stack was dismantled before */
+
     if (s_o==-1) s_o = select_dismantling_stack(layout);
 
     if (s_o==-1 || layout.stacks[s_o].size() == 0) return false;
 
+    layout.dismantled_stacks.insert(s_o);
     while (layout.stacks[s_o].size()>0){
         int s_d = select_destination_stack(layout,s_o).first;
         layout.move(s_o,s_d);

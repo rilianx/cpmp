@@ -1,5 +1,6 @@
 
 #include <map>
+#include <set>
 #include <vector>
 #include <list>
 #include <iterator>
@@ -31,6 +32,7 @@ class Layout {
         int full_stacks = 0;
         int last_sd =-1; /*last dismantled stack*/
         list <int> bsg_moves;
+        set <int> dismantled_stacks;
 
         static int H;
 
