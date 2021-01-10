@@ -151,6 +151,7 @@ def remove_until(column):
             return contador
             
         contador+=1
+    return 0 # el stack está ordenado
 
 def showtime(path):
     layout=read(path)

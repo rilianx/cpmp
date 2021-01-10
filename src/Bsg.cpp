@@ -1,0 +1,71 @@
+
+#include "Bsg.h"
+
+#include <set>
+#include <utility>
+
+using namespace std;
+
+using namespace cpmp;
+
+namespace cpmp {
+    void generate_candidates(const Layout& lay, list<Layout>& C){
+        
+        for(int s_o=0; s_o < lay.size(); s_o++){
+            if (lay.stacks[s_o].size() == 0) continue;
+            
+            Layout clay = lay;
+            bool success = atomic_move(clay,s_o);
+            if (success)
+                C.push_back(clay);
+            
+        }
+        
+        Layout clay = lay;
+        iter_greedy(clay);
+        C.push_back(clay);
+
+    }
+
+    int BSG(Layout& layout, int w){
+        int min_steps=200;
+        list<Layout> S;
+        S.push_back(layout);
+        while(S.size() > 0){
+            list<Layout> C;
+           
+            for(Layout& lay:S) {
+                //lay.print();
+                generate_candidates(lay, C);
+            }
+            
+
+            multimap< int, Layout* > N; //new level of the beam search tree
+            for(Layout& clay : C){
+                if(clay.steps >= min_steps) continue;
+                int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
+                Layout gclay = clay;
+
+                int steps = greedy_solve(gclay, min_steps+10);
+
+                if(steps != -1 && steps < min_steps){
+                    min_steps = steps;
+                    //cout << min_steps << endl;
+                }
+
+                if(steps !=-1 && lb < steps) N.insert(make_pair(steps, &clay));
+            }
+
+            S.clear(); int i=0;
+            for(pair<int, Layout*> lay_p : N ){
+                if(i==w) break;
+                S.push_back(Layout(*lay_p.second));
+                i++;
+            }
+            
+        }
+        if (min_steps==200) return -1;
+        return min_steps;  
+    }
+    
+}

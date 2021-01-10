@@ -15,15 +15,21 @@ class Layout:
     def __init__(self, stacks, H):
         self.stacks = stacks
         self.sorted_elements = []
+        self.total_elements = 0
         self.sorted_stack = []
         self.unsorted_stacks = 0
         self.steps = 0
         self.current_step = 0
-        self.moves = []
+        #self.moves = []
         self.H = H
+        self.full_stacks = 0
+        self.last_sd = None
+        self.bsg_moves=[]
         j=0
         
         for stack in stacks:
+            self.total_elements += len(stack)
+            if len(stack) == self.H: self.full_stacks+=1
             self.sorted_elements.append(compute_sorted_elements(stack))
             if not self.is_sorted_stack(j):
                 self.unsorted_stacks += 1
@@ -31,7 +37,12 @@ class Layout:
             else: self.sorted_stack.append(True)
             j += 1
     
+    
+    
     def move(self,i,j, index=-1):
+        if len(self.stacks[i]) == self.H: self.full_stacks -= 1
+        if len(self.stacks[j]) == self.H-1: self.full_stacks += 1
+        
         c = self.stacks[i][index]
         if self.is_sorted_stack(i):
             self.sorted_elements[i] -= 1
@@ -47,7 +58,9 @@ class Layout:
         self.is_sorted_stack(j)
         self.steps += 1
         self.current_step += 1
-        self.moves.append((i,j,index))
+        #self.moves.append((i,j,index))
+        
+
         
         return c
         
@@ -64,7 +77,7 @@ class Layout:
         if self.current_step == self.steps: 
             if printed: self.highlighted_print([])
             return
-        i,j = self.moves[self.current_step]
+        #i,j = self.moves[self.current_step]
         self.current_step += 1
         c=self.stacks[i].pop()
         self.stacks[j].append(c)
@@ -72,7 +85,7 @@ class Layout:
         if printed:
             s=[]
             if(self.current_step < self.steps):
-                i,j = self.moves[self.current_step]
+                #i,j = self.moves[self.current_step]
                 s.append(self.stacks[i]), s.append(self.stacks[j])
             self.highlighted_print(s)
                 
@@ -83,7 +96,7 @@ class Layout:
             return
         
         self.current_step -= 1
-        j,i = self.moves[self.current_step]
+        #j,i = self.moves[self.current_step]
         c=self.stacks[i].pop()
         self.stacks[j].append(c)
 
@@ -121,7 +134,9 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100, rank=[]):
     c = s_o[-1]
     best_eval=-1000000;
     best_dest=None
+    best_xg = False
     dest=-1;
+    
 
     for dest in range(len(layout.stacks)):
             if orig==dest or dest in black_list: continue
@@ -130,11 +145,11 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100, rank=[]):
             if(layout.H == len(s_d)): continue
             top_d=gvalue(s_d)
 
-            ev=0
+            ev=0; xg=False
 
             if layout.is_sorted_stack(dest) and c<=top_d:
               #c can be well-placed: the sorted stack minimizing top_d is preferred.
-              ev = 100000 - 100*top_d
+              ev = 100000 - 100*top_d; xg=True
             elif not layout.is_sorted_stack(dest) and c>=top_d:
               #unsorted stack with c>=top_d maximizing top_d is preferred
               ev = top_d
@@ -142,23 +157,24 @@ def select_destination_stack(layout, orig, black_list=[], max_pos=100, rank=[]):
               #sorted with minimal top_d
               ev = -100 - len(s_d) #- top_d
             else:
-              #unsorted with minimal numer of auxiliary stacks
-              ev = -10000  
+              #unsorted with minimal number of auxiliary stacks
+              ev = -10000  - 100*len(s_d) - top_d
               #penaliza en caso de que haya un elemento rank debajo
-              if top_d in rank: ev -= 50*(top_d-c)
+              #if top_d in rank: ev -= 50*(top_d-c)
             
             if layout.H - len(s_d) > max_pos:
-              ev -= 100000
+                ev -= 100000
 
             if ev > best_eval:
                 best_eval=ev
                 best_dest=dest
+                best_xg=xg
 
-    return best_dest
+    return best_dest, best_xg
 
 def select_origin_stack(layout, dest, ori, rank):
     s_d = layout.stacks[dest]
-    top_d = s_d[-1]
+    top_d = gvalue(s_d)
     best_eval=-1000000;
     best_orig=None
     orig=-1;
@@ -169,7 +185,7 @@ def select_origin_stack(layout, dest, ori, rank):
 
             if len(s_o)==0: continue           
             c=gvalue(s_o)
-            if c in rank and rank[c] < layout.H-len(s_d): continue
+            if c in rank and rank.index(c)+1 < layout.H-len(s_d): continue
 
             ev=0
 
@@ -193,7 +209,7 @@ def reachable_height(layout, i):
     
     top = gvalue(layout.stacks[i])
     h = len(layout.stacks[i])
-    if h==layout.H: return size;
+    if h==layout.H: return h;
     
     stack=layout.stacks[i]
     all_stacks = True #True: all the bad located tops can be placed in stack
