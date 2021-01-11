@@ -81,7 +81,7 @@ namespace cpmp {
                     //cout << min_steps << endl;
                 }
 
-                if(steps !=-1 && lb < steps) N.insert(make_pair(steps-0.01*clay.steps, &clay));
+                if(steps !=-1 && lb < steps) N.insert(make_pair(steps+0.01*clay.steps, &clay));
             }
 
             S.clear(); int i=0;
