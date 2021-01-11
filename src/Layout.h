@@ -42,8 +42,19 @@ class Layout {
 
         int move(int i, int j);
 
+
+
         bool is_sorted(int j) const{
             return (stacks[j].size() == sorted_elements[j]);
+        }
+
+        // Optimal: O(1)
+        int capacity(int s_o, int s_d=-1){
+            int n=1;
+            int len=stacks[s_o].size();
+            if(s_d!=-1) {len+=stacks[s_d].size(); n++;}
+
+            return ( (Layout::H) * (size()-n) - (total_elements-len) );
         }
 
         int sum_stack(int i) const{

@@ -27,11 +27,13 @@ int main(int argc, char * argv[]){
     Layout L(path);
     const clock_t begin_time = clock();
     int steps;
-    if (beams==0) steps = greedy_solve(L,1000);
-    else steps = BSG(L, beams, SD_MOVE);
+    //if (beams==0) steps = greedy_solve(L,1000);
+    if (beams==0) steps = pixie_solve(L,1000);
+    else steps = BSG(L, beams);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
 }
+
 
 // int main(){
 //     DIR *dir;
@@ -40,6 +42,7 @@ int main(int argc, char * argv[]){
 //     /*** CSV instances ***/
 //     string folder = "../Instancias/CVS/";
 //     if ((dir = opendir (folder.c_str())) != NULL) {
+//     double prom=0.0;
 //     while ((ent = readdir (dir)) != NULL) {
 //         if(ent->d_name[0]=='.') continue;
 
@@ -49,21 +52,24 @@ int main(int argc, char * argv[]){
         
 //         for(int i=1;i<=40; i++){
 //             string path=folder+instance_set+"/data"+instance_set+"-"+to_string(i)+".dat";
-//             //cout << path << endl;    
+//             cout << path << endl;    
 //             Layout L(path);
 //             Layout::H = L.stacks[0].size()+2;
 //             //L.print();
 
-//             int steps = greedy_solve(L, 1000);
+//             //int steps = pixie_solve(L, 1000);
 //             //int steps = BSG(L, 1000, SD_MOVE);
-//             //int steps = BSG(L, 1000);
+//             int steps = BSG(L, 10);
 //             if(steps!=-1){
+                
 //                 total_steps+=steps;   
 //                 count ++;
-//             }
+//             }else cout << path << endl;
 //         }
 //         cout << instance_set << "\t" << (double)total_steps/count <<"\t" << count << "\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
+//         prom +=  (double)total_steps/count;
 //     }
+//     cout << prom/21 << endl;
 //     closedir (dir);
 
 //     } else {
@@ -99,7 +105,7 @@ int main(int argc, char * argv[]){
 //             }
 //         }
 //         // do something
-
+        
 //         cout << (double)total_steps/20 << "\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 //         closedir (dir);
 
@@ -108,6 +114,7 @@ int main(int argc, char * argv[]){
 //         perror ("");
 //         return EXIT_FAILURE;
 //         }
+        
 //     }
 
 //     //Layout L("../Instancias/BF/BF32/cpmp_20_8_128_52_96_6.bay", 8);

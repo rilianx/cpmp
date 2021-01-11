@@ -21,7 +21,7 @@ namespace cpmp {
                     C.push_back(clay);
             }
             Layout clay = lay;
-            iter_greedy(clay);
+            iter_pixie(clay);
             C.push_back(clay);
         }
 
@@ -40,6 +40,11 @@ namespace cpmp {
             if(clay.steps > lay.steps)
                 C.push_back(clay);
             
+            clay = lay;
+            iter_pixie(clay);
+            if(clay.steps > lay.steps)
+                C.push_back(clay);
+
         }
 
         
@@ -48,6 +53,8 @@ namespace cpmp {
 
     int BSG(Layout& layout, int w, int type){
         int min_steps=200;
+        if (layout.unsorted_elements==0) return 0;
+        
         list<Layout> S;
         S.push_back(layout);
         while(S.size() > 0){
@@ -66,7 +73,7 @@ namespace cpmp {
                 Layout gclay = clay;
 
                 
-                int steps = greedy_solve(gclay, min_steps+10);
+                int steps = pixie_solve(gclay, min_steps+10);
                 
 
                 if(steps != -1 && steps < min_steps){

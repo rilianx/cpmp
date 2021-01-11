@@ -67,6 +67,7 @@ int Layout::move(int i, int j){
     return c;
 }
 
+
 int Layout::reachable_height(int i){
     if (!is_sorted(i)) return 0;
     int top = gvalue(stacks[i]);

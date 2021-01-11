@@ -185,6 +185,7 @@ def select_origin_stack(layout, dest, ori, rank):
 
             if len(s_o)==0: continue           
             c=gvalue(s_o)
+            #se intenta colocar lo "suficientemente" alto
             if c in rank and rank.index(c)+1 < layout.H-len(s_d): continue
 
             ev=0
