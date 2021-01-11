@@ -54,7 +54,7 @@ namespace cpmp {
     int BSG(Layout& layout, int w, int type){
         int min_steps=200;
         if (layout.unsorted_elements==0) return 0;
-        
+
         list<Layout> S;
         S.push_back(layout);
         while(S.size() > 0){
@@ -81,7 +81,7 @@ namespace cpmp {
                     //cout << min_steps << endl;
                 }
 
-                if(steps !=-1 && lb < steps) N.insert(make_pair(steps-0.01*clay.steps, &clay));
+                if(steps !=-1 && lb < steps) N.insert(make_pair(steps+0.01*clay.steps, &clay));
             }
 
             S.clear(); int i=0;
