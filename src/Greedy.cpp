@@ -174,7 +174,7 @@ bool SD_move(Layout& layout, int s_o){
     if (s_o==-1 || layout.stacks[s_o].size() == 0) return false;
 
 
-    layout.dismantled_stacks.insert(s_o);
+    //layout.dismantled_stacks.insert(s_o);
     while (layout.stacks[s_o].size()>0){
         int s_d = select_destination_stack(layout,s_o).first;
         layout.move(s_o,s_d);

@@ -29,7 +29,7 @@ int main(int argc, char * argv[]){
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
     if (beams==0) steps = pixie_solve(L,1000);
-    else steps = BSG(L, beams);
+    else steps = BSG(L, beams, SD_MOVE);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
 }

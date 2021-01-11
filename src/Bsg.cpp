@@ -28,7 +28,7 @@ namespace cpmp {
         if(type==SD_MOVE){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.stacks[s_o].size() >= Layout::H/2) continue;
+                //if (lay.is_sorted(s_o) && lay.stacks[s_o].size() >= Layout::H/2) continue;
                 
                 Layout clay = lay;
                 bool success = SD_move(clay,s_o);
