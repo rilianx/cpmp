@@ -1,16 +1,16 @@
 [base]
-test_instances = instancesCVS.txt
+test_instances = instances.txt
 mintime = 0.0001
 maxtime = 40
 factors = 1 0.833 0.665 0.5 0.2 0.1
 sig_gain = 1.2
 max_seeds = 1
 min_seeds = 1
-algo_names = GFOG1000 FOG
+algo_names = GFOG1000
 
 
-[FOG]
+[GFOG1000]
 exec = ../fog
-params = _INSTANCE
+params = _INSTANCE 1000
 outputpos_times = 0
 outputpos_boxes = 0
