@@ -28,6 +28,7 @@ namespace cpmp {
         if(type==SD_MOVE){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
+                if (lay.is_sorted(s_o) && lay.stacks[s_o].size() >= Layout::H/2) continue;
                 
                 Layout clay = lay;
                 bool success = SD_move(clay,s_o);
@@ -38,6 +39,7 @@ namespace cpmp {
             lazy_greedy(clay);
             if(clay.steps > lay.steps)
                 C.push_back(clay);
+            
         }
 
         
@@ -57,20 +59,22 @@ namespace cpmp {
             }
             
 
-            multimap< int, Layout* > N; //new level of the beam search tree
+            multimap< double, Layout* > N; //new level of the beam search tree
             for(Layout& clay : C){
                 if(clay.steps >= min_steps) continue;
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
+                
                 int steps = greedy_solve(gclay, min_steps+10);
+                
 
                 if(steps != -1 && steps < min_steps){
                     min_steps = steps;
                     //cout << min_steps << endl;
                 }
 
-                if(steps !=-1 && lb < steps) N.insert(make_pair(steps, &clay));
+                if(steps !=-1 && lb < steps) N.insert(make_pair(steps-0.01*clay.steps, &clay));
             }
 
             S.clear(); int i=0;

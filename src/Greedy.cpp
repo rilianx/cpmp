@@ -71,12 +71,14 @@ int select_dismantling_stack(Layout& layout){
 }
 
 bool SD_move(Layout& layout, int s_o){
+
     if( layout.dismantled_stacks.find(s_o) != layout.dismantled_stacks.end() ) 
         return false; /* the stack was dismantled before */
 
     if (s_o==-1) s_o = select_dismantling_stack(layout);
 
     if (s_o==-1 || layout.stacks[s_o].size() == 0) return false;
+
 
     layout.dismantled_stacks.insert(s_o);
     while (layout.stacks[s_o].size()>0){
@@ -139,7 +141,9 @@ int greedy_solve(Layout& layout, int step_limit){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
         //cout << layout.unsorted_stacks << endl;
         //layout.print(); cout << endl;
+        int steps_old=layout.steps;
         iter_greedy(layout);
+        if (layout.steps==steps_old) return -1;
     }
     if(layout.steps >= step_limit ) return -1;
 

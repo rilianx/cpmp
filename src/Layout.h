@@ -42,7 +42,7 @@ class Layout {
 
         int move(int i, int j);
 
-        bool is_sorted(int j){
+        bool is_sorted(int j) const{
             return (stacks[j].size() == sorted_elements[j]);
         }
 
