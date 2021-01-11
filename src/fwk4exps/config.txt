@@ -6,7 +6,13 @@ factors = 1 0.833 0.665 0.5 0.2 0.1
 sig_gain = 1.2
 max_seeds = 1
 min_seeds = 1
-algo_names = GFOG1000 GFOG1 GFOG100
+algo_names = GFOG1000 GFOG1 GFOG100 FOG
+
+[FOG]
+exec = ../fog
+params = _INSTANCE 0
+outputpos_times = 0
+outputpos_boxes = 0
 
 [GFOG1]
 exec = ../fog
