@@ -31,3 +31,9 @@ exec = ../fog
 params = _INSTANCE 1000
 outputpos_times = 0
 outputpos_boxes = 0
+
+[GFOG10000]
+exec = ../fog
+params = _INSTANCE 10000
+outputpos_times = 0
+outputpos_boxes = 0
