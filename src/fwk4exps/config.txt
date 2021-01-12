@@ -1,12 +1,12 @@
 [base]
-test_instances = instancesCVS.txt
+test_instances = instances.txt
 mintime = 0.0001
 maxtime = 40
 factors = 1 0.833 0.665 0.5 0.2 0.1
 sig_gain = 1.2
 max_seeds = 1
 min_seeds = 1
-algo_names = GFOG1000 GFOG1 GFOG100 FOG
+algo_names = GFOG1000 GFOG1 GFOG100 FOG GFOG10000_SD GFOG1000_SD GFOG1_SD GFOG100_SD
 
 [FOG]
 exec = ../fog
@@ -32,8 +32,32 @@ params = _INSTANCE 1000
 outputpos_times = 0
 outputpos_boxes = 0
 
-[GFOG10000]
+[GFOG1000]
 exec = ../fog
-params = _INSTANCE 10000
+params = _INSTANCE 1000
+outputpos_times = 0
+outputpos_boxes = 0
+
+[GFOG1_SD]
+exec = ../fog
+params = _INSTANCE 1 --SD_MOVE
+outputpos_times = 0
+outputpos_boxes = 0
+
+[GFOG100_SD]
+exec = ../fog
+params = _INSTANCE 100 --SD_MOVE
+outputpos_times = 0
+outputpos_boxes = 0
+
+[GFOG1000_SD]
+exec = ../fog
+params = _INSTANCE 1000 --SD_MOVE
+outputpos_times = 0
+outputpos_boxes = 0
+
+[GFOG10000_SD]
+exec = ../fog
+params = _INSTANCE 10000 --SD_MOVE
 outputpos_times = 0
 outputpos_boxes = 0

@@ -30,9 +30,12 @@ class Layout {
         int unsorted_elements = 0;
         int steps = 0;
         int full_stacks = 0;
-        int last_sd =-1; /*last dismantled stack*/
+       
         list <int> bsg_moves;
         set <int> dismantled_stacks;
+
+        multimap <int ,int> gv2index; //for the beamsearch (type:SDPP)
+        int last_sd =-1; /*last dismantled stack*/
 
         static int H;
 
@@ -64,7 +67,7 @@ class Layout {
         }
 
         //reachable height of stack i by only performing BG moves
-        int reachable_height(int i);
+        int reachable_height(int i) const;
 
         int size() const {return stacks.size();}
 

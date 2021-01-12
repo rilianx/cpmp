@@ -23,7 +23,9 @@ namespace cpmp {
     enum neighbourhood{ATOMIC_MOVE, SD_MOVE} ;
 
     void generate_candidates(const Layout& lay, int type=ATOMIC_MOVE);
-    int BSG(Layout& layout, int w=4, int type=ATOMIC_MOVE);
+    int BSG(Layout& layout, int w, int type, Layout& best_lay);
+
+    void recreate(const Layout& lay, list<int>& bsg_moves);
 }
 
 

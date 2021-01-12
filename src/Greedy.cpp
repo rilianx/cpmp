@@ -350,14 +350,9 @@ int greedy_solve(Layout& layout, int step_limit){
 void iter_pixie(Layout& layout){
     if (!SF_move(layout)){
         multimap <int ,int> gv2index;
-        //layout.print(); cout << "SDpp"<< endl;
         int s_o=-1;
         SDpp(layout,s_o,gv2index);
-        //layout.print(); cout << layout.full_stacks << endl;
-        //cout << "SFpp"<< endl;
         SFpp(layout,s_o,gv2index);
-        //layout.print(); cout << endl;
-        //cout << layout.full_stacks << endl;
     }
 }
 

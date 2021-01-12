@@ -24,13 +24,19 @@ int main(int argc, char * argv[]){
     Layout::H = atoi (argv[1]);
     string path(argv[2]);
     int beams = atoi (argv[3]);
-    Layout L(path);
+    Layout L(path), best_lay(path);
     const clock_t begin_time = clock();
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
+    int type=ATOMIC_MOVE;
+    if(argc>=5 && string(argv[4])== "--SD_MOVE") type=SD_MOVE;
     if (beams==0) steps = pixie_solve(L,1000);
-    else steps = BSG(L, beams, SD_MOVE);
+    else steps = BSG(L, beams, type, best_lay);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
+
+    //for(int m: best_lay.bsg_moves) cout << m  << " ";
+    //cout << endl;
+    //recreate(L,best_lay.bsg_moves);
 
 }
 
