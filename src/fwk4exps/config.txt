@@ -6,11 +6,11 @@ factors = 1 0.833 0.665 0.5 0.2 0.1
 sig_gain = 1.2
 max_seeds = 1
 min_seeds = 1
-algo_names = GFOG1000 GFOG1 GFOG100 FOG GFOG10000_SD GFOG1000_SD GFOG1_SD GFOG100_SD
+algo_names = GFOG1000 GFOG1000_SD FOG 
 
 [FOG]
 exec = ../fog
-params = _INSTANCE 0
+params = _INSTANCE 0 -- --no-pixie
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -28,7 +28,7 @@ outputpos_boxes = 0
 
 [GFOG1000]
 exec = ../fog
-params = _INSTANCE 1000
+params = _INSTANCE 1000 -- --no-pixie
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -52,7 +52,7 @@ outputpos_boxes = 0
 
 [GFOG1000_SD]
 exec = ../fog
-params = _INSTANCE 1000 --SD_MOVE
+params = _INSTANCE 1000 --SD_MOVE --no-pixie
 outputpos_times = 0
 outputpos_boxes = 0
 

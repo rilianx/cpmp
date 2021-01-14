@@ -26,6 +26,8 @@ namespace cpmp {
     int BSG(Layout& layout, int w, int type, Layout& best_lay);
 
     void recreate(const Layout& lay, list<int>& bsg_moves);
+
+    static bool PIXIE=true;
 }
 
 

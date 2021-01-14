@@ -80,8 +80,13 @@ namespace cpmp {
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
+                int steps;
+                if(PIXIE)
+                    steps = pixie_solve(gclay, min_steps+10);
+                else
+                    steps = greedy_solve(gclay, min_steps+10);
                 
-                int steps = pixie_solve(gclay, min_steps+10);
+                
                 
 
                 if(steps != -1 && steps < min_steps){
