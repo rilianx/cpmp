@@ -9,7 +9,7 @@ using namespace std;
 using namespace cpmp;
 
 namespace cpmp {
-    void generate_candidates(const Layout& lay, list<Layout>& C, int type){
+    void generate_candidates(const Layout& lay, list<Layout>& C, int type, bool PIXIE){
         
         if(type==ATOMIC_MOVE){
             for(int s_o=0; s_o < lay.size(); s_o++){
@@ -21,9 +21,15 @@ namespace cpmp {
                 if (success)
                     C.push_back(clay);
             }
+
             Layout clay = lay;
-            iter_pixie(clay);
-            C.push_back(clay);
+            if(PIXIE)
+                iter_pixie(clay);
+            else
+                iter_greedy(clay);
+
+            if(clay.steps > lay.steps)
+                C.push_back(clay);
         }
 
         if(type==SD_MOVE){
@@ -36,21 +42,26 @@ namespace cpmp {
                 bool success = SD_move(clay,s_o);
                 if (success){ 
                     clay.bsg_moves.push_back(s_o);
-                    C.push_back(clay);}
+                    //C.push_back(clay);
+                }
 
             }
 
             Layout clay = lay;
             lazy_greedy(clay);
             if(clay.steps > lay.steps){
-                clay.bsg_moves.push_back(-1);
+                //clay.bsg_moves.push_back(-1);
                 C.push_back(clay);
             }
             
             clay = lay;
-            iter_pixie(clay);
+            if(PIXIE)
+                iter_pixie(clay);
+            else
+                iter_greedy(clay);
+            
             if(clay.steps > lay.steps){
-                clay.bsg_moves.push_back(-2);
+                //clay.bsg_moves.push_back(-2);
                 C.push_back(clay);
             }
 
@@ -59,7 +70,7 @@ namespace cpmp {
         
     }
 
-    int BSG(Layout& layout, int w, int type, Layout& best_lay){
+    int BSG(Layout& layout, int w, int type, Layout& best_lay, bool PIXIE){
         int min_steps=200;
         if (layout.unsorted_elements==0) return 0;
 
@@ -70,7 +81,7 @@ namespace cpmp {
            
             for(Layout& lay:S) {
                 //lay.print();
-                generate_candidates(lay, C, type);
+                generate_candidates(lay, C, type, PIXIE);
             }
             
 

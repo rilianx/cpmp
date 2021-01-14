@@ -22,12 +22,12 @@ using namespace cpmp;
 namespace cpmp {
     enum neighbourhood{ATOMIC_MOVE, SD_MOVE} ;
 
-    void generate_candidates(const Layout& lay, int type=ATOMIC_MOVE);
-    int BSG(Layout& layout, int w, int type, Layout& best_lay);
+    void generate_candidates(const Layout& lay, int type=ATOMIC_MOVE, bool PIXIE=true);
+    int BSG(Layout& layout, int w, int type, Layout& best_lay, bool PIXIE=true);
 
     void recreate(const Layout& lay, list<int>& bsg_moves);
 
-    static bool PIXIE=true;
+    static bool PIXIE;
 }
 
 
