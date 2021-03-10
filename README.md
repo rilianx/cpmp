@@ -2,7 +2,6 @@
 
 Implementation of a Filling-Emptying Greedy algorithm (**FEG**) for the CPMP. It is based on two procedures: (1) *filling* ordered stacks by moving directly badly placed containers into ordered stacks such that the containers become well placed and *emptying* one small stack, by moving its elements into other stacks, in order to have more available slots for well placing containers.
 
-The main differences between **FEG** and other heuristic algorithms are:
 
 ### Compilation
 
