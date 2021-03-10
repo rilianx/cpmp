@@ -1,12 +1,38 @@
-# cpmp
+# A constructive heuristic for the Container Pre-marshalling Problem (CPMP)
 
-## Esto deberia tener un To Do)?
+Implementation of a Filling-Emptying Greedy algorithm (**FEG**) for the CPMP. It is based on two procedures: (1) *filling* ordered stacks by moving directly badly placed containers into ordered stacks such that the containers become well placed and *emptying* one small stack, by moving its elements into other stacks, in order to have more available slots for well placing containers.
 
-* [X] Ver instancias pequeñas (3-3, 3-4, 3-5) y ver que movimientos extras se estan realizando
-* [X] Describir el porque ocurre 
-> Definitivamente la seleccion de columnas es importante, estuve probando instancias donde existe una diferencia de mas de 5 movimientos solo cambiando la columna seleccionada, por lo que me gustaria incluir una nueva variable llamada "stress" a nuestro modelo del problema, mas explicaciones de como funcionara lo hare otro dia cuando determine bien que afecta aparte de la seleccion
-* [ ] Describir posibles soluciones
-* [ ] Implementar cambios
-* [ ] Testear
-* [ ] Llorar porque no funciono como se esperaba/Reir porque funciono mejor de lo esperado
+The main differences between **FEG** and other heuristic algorithms are:
+
+### Compilation
+
+Enter to the `src` folder and compile the C++ code:
+
+````
+g++ Greedy.cpp Layout.cpp Bsg.cpp main_cpmp.cpp -o feg
+````
+
+### Execution
+The command of exceution is:
+````
+.\fog.exe H INSTANCE nb [--GreedyVariant] [--BSvariant]
+````
+
+where:
+* `H` is the maximum height of stacks
+* `nb` is the number of beams of the Beam Search strategy. If `nb=0`, then only the greedy algorithm is applied
+* `GreedyVariant` (`FEG` or `FERG`). Correspond to the subyacent greedy algorithm variant.
+* `BSvariant` (`single_moves` or `compound_moves`). Correspond to the beam search variant.
+
+Example:
+````
+.\ferg 12 ..\Instancias\CVS\10-6\data10-6-10.dat 0 --FERG
+120 0.001
+````
+
+The output of the method (`120 0.001` in the example) corresponds to the minimum number of steps found by the strategy and the spend CPU time in seconds.
+
+
+
+
 

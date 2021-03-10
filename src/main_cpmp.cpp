@@ -31,8 +31,9 @@ int main(int argc, char * argv[]){
     //if (beams==0) steps = greedy_solve(L,1000);
     int type=ATOMIC_MOVE;
     bool PIXIE=true;
-    if(argc>=5 && string(argv[4])== "--SD_MOVE") type=SD_MOVE;
-    if(argc>=6 && string(argv[5])== "--no-pixie") PIXIE=false;
+    if(argc>=5 && string(argv[4])== "--FEG") PIXIE=false;
+    if(argc>=6 && string(argv[5])== "--compound_moves") type=SD_MOVE;
+
 
     if (beams==0){
         if(PIXIE) steps = pixie_solve(L,1000);
