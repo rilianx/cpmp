@@ -14,7 +14,7 @@ g++ Greedy.cpp Layout.cpp Bsg.cpp main_cpmp.cpp -o feg -std=c++11
 ### Execution
 The command of exceution is:
 ````
-.\fog.exe H INSTANCE nb [--GreedyVariant] [--BSvariant]
+.\feg H INSTANCE nb [--GreedyVariant] [--BSvariant]
 ````
 
 where:
