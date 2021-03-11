@@ -8,7 +8,7 @@ Implementation of a Filling-Emptying Greedy algorithm (**FEG**) for the CPMP. It
 Enter to the `src` folder and compile the C++ code:
 
 ````
-g++ Greedy.cpp Layout.cpp Bsg.cpp main_cpmp.cpp -o feg
+g++ Greedy.cpp Layout.cpp Bsg.cpp main_cpmp.cpp -o feg -std=c++11
 ````
 
 ### Execution
@@ -25,7 +25,7 @@ where:
 
 Example:
 ````
-.\ferg 12 ..\Instancias\CVS\10-6\data10-6-10.dat 0 --FERG
+.\feg 12 ..\Instancias\CVS\10-6\data10-6-10.dat 0 --FERG
 120 0.001
 ````
 
