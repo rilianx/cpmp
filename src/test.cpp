@@ -24,7 +24,7 @@ using namespace cpmp;
 class Node
 {
     Layout * actual;
-    list<Layout> * hijos;
+    list<Layout *>  hijos;
     int level;
 
     public: 
@@ -37,16 +37,18 @@ class Node
             //Por cada stack
             for (int i=0;i<stacks;i++)
             {
-                //DeepCopy del anterior
-                Layout * nuevo = new Layout(*actual);
+               
                 //Se mueve al resto
                 for (j=0;j<stacks;j++)
                 {
                     //Que no sea el mismo stack
                     if (i != j)
                     {
-                        //Si j no esta lleno
-                        //No encontre como :c
+                        
+                        
+                        //Si j no esta lleno (agregar)
+                        //DeepCopy del anterior
+                        Layout * nuevo = new Layout(*actual);
                         nuevo->move(i,j);
                         hijos.insert(*nuevo);
                     }
@@ -60,7 +62,7 @@ class Tree
 {
     Node * base;
     int limit;
-    list<Layout> * layouts;
+    list<Layout *>  layouts;
 }
 
 int main(int argc, char * argv[])
