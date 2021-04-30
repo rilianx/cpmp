@@ -45,7 +45,7 @@ Example:
 ````
 .\feg.exe 5 --random 3 6 1000 --FEG --compund_moves
 
-Genrating a random instance: S=3, N=6
+Genrating a random instance: S=3, N=6, H=5
 [59 ]
 [35 ]
 [70 31 49 27 ]
