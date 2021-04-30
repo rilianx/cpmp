@@ -43,6 +43,6 @@ where `S` is the number of stacks and `N`, the number of containers.
 
 Example:
 ````
-.\feg 5 --random 10 40 1000 --FEG --compund_moves
+.\feg 5 --random 10 40 1000 --FEG --compound_moves
 120 0.001
 ````
