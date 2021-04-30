@@ -37,8 +37,12 @@ The output of the method (`120 0.001` in the example) corresponds to the minimum
 
 The algorithm also allows generate and solve random instances. The command is:
 ````
-.\feg --random S N H INSTANCE nb [--GreedyVariant] [--BSvariant]
+.\feg H --random S N INSTANCE nb [--GreedyVariant] [--BSvariant]
 ````
 where `S` is the number of stacks and `N`, the number of containers.
 
-
+Example:
+````
+.\feg 5 --random 10 40 1000 --FEG --compund_moves
+120 0.001
+````
