@@ -32,16 +32,22 @@ class Layout {
         int full_stacks = 0;
        
         list <int> bsg_moves;
+        list < pair <int, int> > moves;
+        
         set <int> dismantled_stacks;
 
         multimap <int ,int> gv2index; //for the beamsearch (type:SDPP)
         int last_sd =-1; /*last dismantled stack*/
 
+        static bool save_moves;
+
         static int H;
 
     public:
 
+        Layout() {}
         Layout(string filename);
+        Layout(int S, int N); //random generator
 
         int move(int i, int j);
 

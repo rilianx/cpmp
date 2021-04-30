@@ -12,6 +12,7 @@ g++ Greedy.cpp Layout.cpp Bsg.cpp main_cpmp.cpp -o feg -std=c++11
 ````
 
 ### Execution
+
 The command of exceution is:
 ````
 .\feg H INSTANCE nb [--GreedyVariant] [--BSvariant]
@@ -23,6 +24,7 @@ where:
 * `GreedyVariant` (`FEG` or `FERG`). Correspond to the subyacent greedy algorithm variant.
 * `BSvariant` (`single_moves` or `compound_moves`). Correspond to the beam search variant.
 
+
 Example:
 ````
 .\feg 12 ..\Instancias\CVS\10-6\data10-6-10.dat 0 --FERG
@@ -31,7 +33,12 @@ Example:
 
 The output of the method (`120 0.001` in the example) corresponds to the minimum number of steps found by the strategy and the spend CPU time in seconds.
 
+### Solving random instances
 
-
+The algorithm also allows generate and solve random instances. The command is:
+````
+.\feg --random S N H INSTANCE nb [--GreedyVariant] [--BSvariant]
+````
+where `S` is the number of stacks and `N`, the number of containers.
 
 

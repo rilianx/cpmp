@@ -3,6 +3,28 @@
 namespace cpmp {
 
 int Layout::H=0;
+bool Layout::save_moves=false;
+
+Layout::Layout(int S, int N){
+
+    unsorted_elements = total_elements = N;
+    stacks.resize(S);
+    sorted_elements.resize(S);
+    for(int j=0;j<N;j++) {
+        int s=rand()%S;
+        while(stacks[s].size()==H) s=rand()%S;
+        stacks[s].push_back(rand()%99+1);
+    }
+
+    for(int i=0;i<S;i++){
+        if (stacks[i].size() == H) full_stacks++;
+        sorted_elements[i] = compute_sorted_elements(stacks[i]);
+        unsorted_elements -= sorted_elements[i];
+        if (!is_sorted(i))
+            unsorted_stacks ++;
+    }
+
+}
 
 Layout::Layout(string filename)  {
     //stacks are read from file
@@ -61,9 +83,9 @@ int Layout::move(int i, int j){
     }
 
     stacks[j].push_back(c);
-
-
     steps ++;
+    if(save_moves) moves.push_front({i,j});
+
     return c;
 }
 

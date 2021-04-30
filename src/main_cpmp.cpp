@@ -22,25 +22,49 @@ using namespace cpmp;
 
 
 int main(int argc, char * argv[]){
+
     Layout::H = atoi (argv[1]);
-    string path(argv[2]);
-    int beams = atoi (argv[3]);
-    Layout L(path), best_lay(path);
+    Layout L;
+
+    int carg=2;
+    if(string(argv[carg++])== "--random") {
+        srand(time(NULL));
+        cout << "Genrating a random instance: S="<<argv[carg] << ", N="<<argv[carg+1] << endl;
+        Layout::save_moves = true;
+        L=Layout(atoi(argv[carg]), atoi(argv[carg+1]));
+        L.print();
+        carg+=2;
+    }else{
+        L=Layout(argv[2]);
+    }
+
+    int beams = atoi (argv[carg++]);
+    Layout best_lay = L;
     const clock_t begin_time = clock();
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
     int type=ATOMIC_MOVE;
     bool PIXIE=true;
-    if(argc>=5 && string(argv[4])== "--FEG") PIXIE=false;
-    if(argc>=6 && string(argv[5])== "--compound_moves") type=SD_MOVE;
-
-
+    if(argc>=carg+1 && string(argv[carg++])== "--FEG") PIXIE=false;
+    if(argc>=carg+1 && string(argv[carg++])== "--compound_moves") type=SD_MOVE;
+    
+    
+    
     if (beams==0){
         if(PIXIE) steps = pixie_solve(L,1000);
         else steps = greedy_solve(L,1000);
     }
     else steps = BSG(L, beams, type, best_lay, PIXIE);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
+
+    int s=best_lay.moves.size();
+    for(auto m : best_lay.moves){
+        best_lay.move(m.second,m.first);
+        cout << "State-Action " << s-- << endl;
+        best_lay.print();
+        cout << m.first <<"," << m.second << endl;
+    }
+    
 
     //for(int m: best_lay.bsg_moves) cout << m  << " ";
     //cout << endl;

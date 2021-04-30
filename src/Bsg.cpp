@@ -41,7 +41,7 @@ namespace cpmp {
                 Layout clay = lay;
                 bool success = SD_move(clay,s_o);
                 if (success){ 
-                    clay.bsg_moves.push_back(s_o);
+                    //clay.bsg_moves.push_back(s_o);
                     //C.push_back(clay);
                 }
 
