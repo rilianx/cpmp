@@ -20,7 +20,7 @@ class Layout:
         self.unsorted_stacks = 0
         self.steps = 0
         self.current_step = 0
-        #self.moves = []
+        self.moves = []
         self.H = H
         self.full_stacks = 0
         self.last_sd = None
@@ -58,7 +58,7 @@ class Layout:
         self.is_sorted_stack(j)
         self.steps += 1
         self.current_step += 1
-        #self.moves.append((i,j,index))
+        self.moves.append((i,j))
         
 
         

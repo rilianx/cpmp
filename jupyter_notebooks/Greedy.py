@@ -52,6 +52,23 @@ def SF_move_d(layout, s_d):
         return True
     return False
 
+def select_dismantling_stack(layout):
+    best_ev = 0; s_o=-1
+    for i in range(len(layout.stacks)):
+        if layout.is_sorted_stack(i) and capacity(layout,i)<3*len(layout.stacks[i]): continue
+        
+        prom = sum(layout.stacks[i]) / len(layout.stacks[i]) 
+        if layout.is_sorted_stack(i):
+            ev = 100000 - 1000*len(layout.stacks[i]) - prom
+        else:
+            ev = 100000 - 1000*len(layout.stacks[i]) + prom
+        
+
+        if ev > best_ev:
+            best_ev = ev
+            s_o = i
+    return s_o
+
 
 def select_dismantling_stacks(layout):
     best_ev = 0
@@ -163,11 +180,15 @@ def search_highest(layout, c, ub, s_d):
     return None
 
 
+def iter(layout):
+    if not SF_move(layout)[0]:
+        SD_move(layout)
+    if layout.steps>1000: return 1000
+    
+
 def greedy_solve(layout):
     while layout.unsorted_stacks>0:
-        if not SF_move(layout)[0]:
-            SD_move(layout)
-        if layout.steps>1000: return 1000
+        iter(layout)
     return layout.steps
 
 def lazy_greedy(layout):
