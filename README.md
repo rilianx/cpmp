@@ -35,7 +35,7 @@ The output of the method (`120 0.001` in the example) corresponds to the minimum
 
 ### Solving random instances
 
-The algorithm also allows generate and solve random instances. The command is:
+The algorithm also allows one to generate and solve random instances. The command is:
 ````
 .\feg H --random S N nb [--GreedyVariant] [--BSvariant]
 ````
