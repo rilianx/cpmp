@@ -43,6 +43,21 @@ where `S` is the number of stacks and `N`, the number of containers.
 
 Example:
 ````
-.\feg 5 --random 10 40 1000 --FEG --compound_moves
-120 0.001
+.\feg.exe 5 --random 3 6 1000 --FEG --compund_moves
+
+Genrating a random instance: S=3, N=6
+[59 ]
+[35 ]
+[70 31 49 27 ]
+2       0
+State-Action 2
+[59 ]
+[35 27 ]
+[70 31 49 ]
+2,0
+State-Action 1
+[59 ]
+[35 ]
+[70 31 49 27 ]
+2,1
 ````
