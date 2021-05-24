@@ -110,8 +110,8 @@ namespace cpmp {
 
                 double eval = steps;
                 if(type==SD_MOVE) eval -= 0.01*clay.steps; //shorter is better
-                //else eval += 0.01*clay.steps;
-                else eval += 0.01*double(lb);//clay.steps; 
+                else eval += 0.01*clay.steps;
+                //else eval += 0.01*double(lb);//clay.steps; 
                 if(steps !=-1 && lb < steps) N.insert(make_pair(eval, &clay));
             }
 
