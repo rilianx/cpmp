@@ -51,6 +51,16 @@ class Layout {
 
         int move(int i, int j);
 
+        int min_unsorted_elements(){
+            int min=H;
+            for(int i=0;i<stacks.size();i++){
+                int unsorted = stacks[i].size()-sorted_elements[i];
+                if(unsorted<min) min=unsorted;
+                if (min==0) return 0;
+            }
+            return min;
+        }
+
 
 
         bool is_sorted(int j) const{

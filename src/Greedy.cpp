@@ -374,11 +374,16 @@ int lazy_greedy(Layout& layout){
     return layout.steps;
 }
 
-bool atomic_move(Layout& layout, int s_o){
+bool atomic_move(Layout& layout, int s_o, int s_d){
     if (layout.stacks[s_o].size() == 0) return false;
-
-    pair<int,bool> s_dd = select_destination_stack(layout, s_o);
-    layout.move(s_o, s_dd.first);
+    int sd;
+    if(s_d==-1){
+        s_d = select_destination_stack(layout, s_o).first;
+    }else{
+        if (s_o == s_d) return false;
+        if (layout.stacks[s_d].size() == Layout::H) return false;
+    }
+    layout.move(s_o, s_d);
     return true;
 }
 
