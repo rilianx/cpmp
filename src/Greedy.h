@@ -30,7 +30,7 @@ namespace cpmp {
     void iter_greedy(Layout& layout);
     int greedy_solve(Layout& layout, int step_limit=1000);
     int lazy_greedy(Layout& layout);
-    bool atomic_move(Layout& layout, int s_o, int s_d=-1);
+    bool atomic_move(Layout& layout, int s_o);
 
     /** Pixie components **/
 
