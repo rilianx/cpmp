@@ -75,6 +75,9 @@ class Layout {
         //reachable height of stack i by only performing BG moves
         int reachable_height(int i) const;
 
+        //number of unblocked containers in stack s
+        int n_unblocked(int s);
+
         int size() const {return stacks.size();}
 
 
@@ -94,11 +97,12 @@ class Layout {
         }
 
         void print() const{
-            for(auto s : stacks){
+            for(int k=0; k<stacks.size(); k++){
                 cout << "[" ;
-                for(auto e : s) cout << e << " ";
-                cout << "]\n";
+                for(auto e : stacks[k]) cout << e << " ";
+                cout << "] sorted:" << sorted_elements[k] <<  "," << is_sorted(k) <<"\n";
             }
+            cout << "total unsorted:" << unsorted_elements << endl;
         }
 
 

@@ -89,6 +89,20 @@ int Layout::move(int i, int j){
     return c;
 }
 
+int Layout::n_unblocked(int k){
+    if (is_sorted(k)) return 1;
+    int n = 0;
+    auto& stack_k=stacks[k]; int sk=stack_k.size();
+    int prev=1000;
+    for(int j=1;j<sk;j++){
+        if (stack_k[sk-j] <= prev){
+            n += 1;
+            prev = stack_k[sk-j];
+        }
+    } 
+    return n;
+}
+
 //O(H*R)
 int Layout::reachable_height(int i) const{
     if (!is_sorted(i)) return 0;

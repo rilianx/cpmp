@@ -35,6 +35,7 @@ int main(int argc, char * argv[]){
         L.print();
         carg+=2;
     }else{
+        Layout::save_moves = true;
         L=Layout(argv[2]);
     }
 
@@ -52,18 +53,23 @@ int main(int argc, char * argv[]){
     
     if (beams==0){
         if(PIXIE) steps = pixie_solve(L,1000);
-        else steps = greedy_solve(L,1000);
+        else {
+            //cout << "greedy_solve" << endl;
+            steps = greedy_solve(L,1000);
+        }
     }
     else steps = BSG(L, beams, type, best_lay, PIXIE);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
-    int s=best_lay.moves.size();
-    for(auto m : best_lay.moves){
-        best_lay.move(m.second,m.first);
+    //L.print();
+
+    int s=L.moves.size();
+    /*for(auto m : L.moves){
+        L.move(m.second,m.first);
         cout << "State-Action " << s-- << endl;
-        best_lay.print();
+        L.print();
         cout << m.first <<"," << m.second << endl;
-    }
+    }*/
     
 
     //for(int m: best_lay.bsg_moves) cout << m  << " ";
