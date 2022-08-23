@@ -9,7 +9,7 @@ using namespace std;
 using namespace cpmp;
 
 namespace cpmp {
-    void generate_candidates(const Layout& lay, list<Layout>& C, int type, bool PIXIE){
+    void generate_candidates(const Layout& lay, list<Layout>& C, int type){
         
         if(type==ATOMIC_MOVE){
             for(int s_o=0; s_o < lay.size(); s_o++){
@@ -23,10 +23,7 @@ namespace cpmp {
             }
 
             Layout clay = lay;
-            if(PIXIE)
-                iter_pixie(clay);
-            else
-                iter_greedy(clay);
+            iter_greedy(clay);
 
             if(clay.steps > lay.steps)
                 C.push_back(clay);
@@ -55,10 +52,7 @@ namespace cpmp {
             }
             
             clay = lay;
-            if(PIXIE)
-                iter_pixie(clay);
-            else
-                iter_greedy(clay);
+            iter_greedy(clay);
             
             if(clay.steps > lay.steps){
                 //clay.bsg_moves.push_back(-2);
@@ -70,7 +64,7 @@ namespace cpmp {
         
     }
 
-    int BSG(Layout& layout, int w, int type, Layout& best_lay, bool PIXIE){
+    int BSG(Layout& layout, int w, int type, Layout& best_lay){
         int min_steps=200;
         if (layout.unsorted_elements==0) return 0;
 
@@ -81,7 +75,7 @@ namespace cpmp {
            
             for(Layout& lay:S) {
                 //lay.print();
-                generate_candidates(lay, C, type, PIXIE);
+                generate_candidates(lay, C, type);
             }
             
 
@@ -91,11 +85,7 @@ namespace cpmp {
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
-                int steps;
-                if(PIXIE)
-                    steps = pixie_solve(gclay, min_steps+10);
-                else
-                    steps = greedy_solve(gclay, min_steps+10);
+                int steps = greedy_solve(gclay, min_steps+10);
                 
                 
                 
@@ -124,19 +114,5 @@ namespace cpmp {
         return min_steps;  
     }
 
-    void recreate(const Layout& lay, list<int>& bsg_moves){
-        Layout clay = lay;
-        clay.print(); cout << endl;
-        for(int m:bsg_moves){
-            cout << "move " << m << endl;
-            if(m==-1) lazy_greedy(clay);
-            else if(m==-2) iter_pixie(clay);
-            else SD_move(clay,m);
-            clay.print(); cout << endl;
-        }
-        cout << "total_steps:" << pixie_solve(clay,1000) << endl;
-        clay.print();
-
-    }
     
 }

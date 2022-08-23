@@ -45,20 +45,15 @@ int main(int argc, char * argv[]){
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
     int type=ATOMIC_MOVE;
-    bool PIXIE=true;
-    if(argc>=carg+1 && string(argv[carg++])== "--FEG") PIXIE=false;
+    if(argc>=carg+1 && string(argv[carg++])== "--FEG");
+    
     if(argc>=carg+1 && string(argv[carg++])== "--compound_moves") type=SD_MOVE;
     
     
     
-    if (beams==0){
-        if(PIXIE) steps = pixie_solve(L,1000);
-        else {
-            //cout << "greedy_solve" << endl;
-            steps = greedy_solve(L,1000);
-        }
-    }
-    else steps = BSG(L, beams, type, best_lay, PIXIE);
+    if (beams==0)
+        steps = greedy_solve(L,1000);
+    else steps = BSG(L, beams, type, best_lay);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
     //L.print();

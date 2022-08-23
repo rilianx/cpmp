@@ -32,16 +32,6 @@ namespace cpmp {
     int lazy_greedy(Layout& layout);
     bool atomic_move(Layout& layout, int s_o);
 
-    /** Pixie components **/
-
-    /* Stack dismantling++:
-    * Attempts to place elements of s_o in other stacks in an "intelligent way"
-    * gvalues of removed elements are placed in gv2index, in order to refill s_o with the same element values
-    */
-    bool SDpp(Layout& layout, int& s_o, multimap <int ,int>& gv2index);
-    bool SFpp(Layout& layout, int s_d, multimap <int ,int>& gv2index);
-    void iter_pixie(Layout& layout);
-    int pixie_solve(Layout& layout, int step_limit);
 
 }
 
