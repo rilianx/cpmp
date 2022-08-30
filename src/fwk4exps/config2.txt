@@ -1,0 +1,49 @@
+[base]
+test_instances = instancesCVS.txt
+mintime = 0.0001
+maxtime = 40
+factors = 1 0.833 0.665 0.5 0.2 0.1
+sig_gain = 1.2
+max_seeds = 1
+min_seeds = 1
+algo_names = FRG1.0 FRG1.2 FRG0.9 FRG0.75 FRG0.5
+
+[FRG1.0]
+exec = ../fog
+tuning_param = B
+tuning_values = 1.0 0.9 0.75 0.5 0.4 0.3
+params = _INSTANCE 1.0 _PARAM 0 --
+outputpos_times = 0
+outputpos_boxes = 0
+
+[FRG1.2]
+exec = ../fog
+tuning_param = B
+tuning_values = 1.0 0.9 0.75 0.5 0.4 0.3
+params = _INSTANCE 1.2 _PARAM 0 --
+outputpos_times = 0
+outputpos_boxes = 0
+
+[FRG0.9]
+exec = ../fog
+tuning_param = B
+tuning_values = 1.0 0.9 0.75 0.5 0.4 0.3
+params = _INSTANCE 0.9 _PARAM 0 --
+outputpos_times = 0
+outputpos_boxes = 0
+
+[FRG0.75]
+exec = ../fog
+tuning_param = B
+tuning_values = 1.0 0.9 0.75 0.5 0.4 0.3
+params = _INSTANCE 0.75 _PARAM 0 --
+outputpos_times = 0
+outputpos_boxes = 0
+
+[FRG0.5]
+exec = ../fog
+tuning_param = B
+tuning_values = 1.0 0.9 0.75 0.5 0.4 0.3
+params = _INSTANCE 0.5 _PARAM 0 --
+outputpos_times = 0
+outputpos_boxes = 0

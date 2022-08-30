@@ -54,10 +54,10 @@ int main(int argc, char * argv[]){
     
     
     
-    if (beams==0){
+    if (beams==0)
         steps = greedy_solve(L,1000,a,b);
-    }
-    else steps = BSG(L, beams, type, best_lay);
+    else 
+        steps = BSG(L, beams, type, best_lay);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
     //L.print();
