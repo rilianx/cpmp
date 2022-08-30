@@ -12,14 +12,14 @@ using namespace cpmp;
 namespace cpmp {
 
 
-bool SF_move(Layout& layout, int pos){
-    pair<int,int> move = _SF_move(layout, pos);
+bool SF_move(Layout& layout, double a, double b){
+    pair<int,int> move = _SF_move(layout, a, b);
     if (move.first==-1) return false;
     layout.move(move.first,move.second);
     return true;
 }
 
-pair<int,int> _SF_move(Layout& layout, int pos){
+pair<int,int> _SF_move(Layout& layout, double a, double b){
     list <pair <int, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
 
     for(int i=0; i<layout.size(); i++){
@@ -28,14 +28,17 @@ pair<int,int> _SF_move(Layout& layout, int pos){
             
             //stacks with H-1 containers are not considered
             //if there are 3 or less not-full stacks
-            bool dale=false;
-            if(h>=Layout::H-1 && Layout::H-1 > layout.size()-layout.full_stacks-1 ) continue;
+            double avH=layout.total_elements/layout.size();
+
+            if(h>=Layout::H-1 && a*avH >= layout.size()-layout.full_stacks ) continue;
+            if(h>=Layout::H-1 && layout.size()-layout.full_stacks < 3 ) continue;
+
 
             int top=Layout::gvalue(layout.stacks[i]);
             for (int k=0; k<layout.size(); k++){
                 h = layout.stacks[k].size();
-                //if (k!=i && (!layout.is_sorted(k))  || (h>=Layout::H-1 && Layout::H/2 > layout.size()-layout.full_stacks-1)) {
-                if (k!=i && (!layout.is_sorted(k))  || (h>=Layout::H-1 && layout.full_stacks >= layout.size()-2)) {
+                if (k!=i && (!layout.is_sorted(k))  || (h>=Layout::H &&  b*avH >= layout.size()-layout.full_stacks ) ||  
+                (h>=Layout::H && layout.size()-layout.full_stacks < 3 ) ) {
                     if (layout.stacks[k].back() <= top) 
                         actions.push_back( make_pair(top - layout.stacks[k].back(), make_pair(k, i)));
                 }
@@ -45,13 +48,10 @@ pair<int,int> _SF_move(Layout& layout, int pos){
     //cout << actions.size() << endl;
     actions.sort();
 
-    if (actions.size()>pos){
-        auto it = actions.begin();
-        advance(it,pos);
-        return it->second;
-    }
-    
-    return make_pair(-1,-1);
+    if (actions.size()>0)
+        return actions.front().second;
+    else   
+        return make_pair(-1,-1);
 }
 
 
@@ -305,9 +305,9 @@ pair<int, bool> select_destination_stack(Layout& layout, int orig, set<int> blac
     return make_pair(best_dest, best_xg);
 }
 
-void iter_greedy(Layout& layout){
+void iter_greedy(Layout& layout, double a, double b){
 
-    if (!SF_move(layout)){
+    if (!SF_move(layout, a, b)){
         //layout.print();
         SD_move(layout);
         //layout.print();
@@ -316,13 +316,13 @@ void iter_greedy(Layout& layout){
 }
 
 
-int greedy_solve(Layout& layout, int step_limit){
+int greedy_solve(Layout& layout, int step_limit, double a, double b){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
         //cout << layout.unsorted_stacks << endl;
         //layout.print(); cout << endl;
         int steps_old=layout.steps;
 
-        iter_greedy(layout);
+        iter_greedy(layout, a, b);
 
         if (layout.steps==steps_old) return -1;
     }

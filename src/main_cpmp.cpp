@@ -39,6 +39,9 @@ int main(int argc, char * argv[]){
         L=Layout(argv[2]);
     }
 
+    double a = atof (argv[carg++]);
+    double b = atof (argv[carg++]);
+
     int beams = atoi (argv[carg++]);
     Layout best_lay = L;
     const clock_t begin_time = clock();
@@ -46,13 +49,14 @@ int main(int argc, char * argv[]){
     //if (beams==0) steps = greedy_solve(L,1000);
     int type=ATOMIC_MOVE;
     if(argc>=carg+1 && string(argv[carg++])== "--FEG");
-    
+
     if(argc>=carg+1 && string(argv[carg++])== "--compound_moves") type=SD_MOVE;
     
     
     
-    if (beams==0)
-        steps = greedy_solve(L,1000);
+    if (beams==0){
+        steps = greedy_solve(L,1000,a,b);
+    }
     else steps = BSG(L, beams, type, best_lay);
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
