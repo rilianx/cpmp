@@ -12,7 +12,7 @@ algo_names = FRG1.0 FRG1.2 FRG0.9 FRG0.75 FRG0.5
 exec = ../fog
 tuning_param = B
 tuning_values = 1.0, 0.9, 0.75, 0.5, 0.4, 0.3
-params = _INSTANCE 1.0 _PARAM 0 --
+params = _INSTANCE 1.0 _B 0 --
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -20,7 +20,7 @@ outputpos_boxes = 0
 exec = ../fog
 tuning_param = B
 tuning_values = 1.0, 0.9, 0.75, 0.5, 0.4, 0.3
-params = _INSTANCE 1.2 _PARAM 0 --
+params = _INSTANCE 1.2 _B 0 --
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -28,7 +28,7 @@ outputpos_boxes = 0
 exec = ../fog
 tuning_param = B
 tuning_values = 1.0, 0.9, 0.75, 0.5, 0.4, 0.3
-params = _INSTANCE 0.9 _PARAM 0 --
+params = _INSTANCE 0.9 _B 0 --
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -36,7 +36,7 @@ outputpos_boxes = 0
 exec = ../fog
 tuning_param = B
 tuning_values = 1.0, 0.9, 0.75, 0.5, 0.4, 0.3
-params = _INSTANCE 0.75 _PARAM 0 --
+params = _INSTANCE 0.75 _B 0 --
 outputpos_times = 0
 outputpos_boxes = 0
 
@@ -44,6 +44,6 @@ outputpos_boxes = 0
 exec = ../fog
 tuning_param = B
 tuning_values = 1.0, 0.9, 0.75, 0.5, 0.4, 0.3
-params = _INSTANCE 0.5 _PARAM 0 --
+params = _INSTANCE 0.5 _B 0 --
 outputpos_times = 0
 outputpos_boxes = 0
