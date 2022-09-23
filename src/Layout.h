@@ -54,7 +54,7 @@ class Layout {
         Layout(string filename);
         Layout(int S, int N); //random generator
 
-        int move(int i, int j);
+        int move(int i, int j, bool reducing=false);
 
 
 

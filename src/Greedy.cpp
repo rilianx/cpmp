@@ -357,17 +357,7 @@ void atomic_iter_greedy(Layout& layout, double a, double b){
     int ev = actions.front().first;
     pair<int,int> move= actions.front().second;
 
-    if(ev<0){ // Reducing stack
-        layout.dismantling_stack=move.first;
-        layout.dismantled_stacks.insert(move.first);
-    }else{ // BG move
-        layout.dismantling_stack=-1;
-        layout.assignation.clear();
-        layout.blocked_stacks.clear();
-    }
-
-    layout.move(move.first,move.second);
-    //layout.print();
+    layout.move(move.first,move.second, ev<0);
 }
 
 void iter_greedy(Layout& layout, double a, double b){

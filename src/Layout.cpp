@@ -53,11 +53,20 @@ Layout::Layout(string filename)  {
     }
 }
 
-int Layout::move(int i, int j){
+int Layout::move(int i, int j, bool reducing){
     if(stacks[i].size() == 0 || stacks[j].size()==H){
         print();
         cout << endl << "error: move (" << i << "," << j << ") is not feasible" << endl;
         exit(0);
+    }
+
+    if(reducing){ 
+        dismantling_stack=i;
+        dismantled_stacks.insert(i);
+    }else{ // BG move
+        dismantling_stack=-1;
+        assignation.clear();
+        blocked_stacks.clear();
     }
 
     if(stacks[i].size() == H) full_stacks--;
