@@ -30,6 +30,11 @@ class Layout {
         int unsorted_elements = 0;
         int steps = 0;
         int full_stacks = 0;
+        
+        //Para la reducción de stacks
+        int dismantling_stack = -1;  //stack que se está reduciendo
+        map< int, int > assignation;
+        set<int> blocked_stacks;
        
         list <int> bsg_moves;
         list < pair <int, int> > moves;

@@ -19,13 +19,11 @@ bool SF_move(Layout& layout, double a, double b){
     return true;
 }
 
-pair<int,int> _SF_move(Layout& layout, double a, double b){
-    list <pair <int, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
+void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions, double a, double b ){
 
     for(int i=0; i<layout.size(); i++){
         int h = layout.stacks[i].size();
-        if(layout.is_sorted(i) && h < Layout::H){
-            
+        if(layout.is_sorted(i) && h < Layout::H){          
             //stacks with H-1 containers are not considered
             //if there are 3 or less not-full stacks
             double avH=layout.total_elements/layout.size();
@@ -44,7 +42,14 @@ pair<int,int> _SF_move(Layout& layout, double a, double b){
                 }
             }
         }
-    }
+    } 
+}
+
+
+pair<int,int> _SF_move(Layout& layout, double a, double b){
+    list <pair <int, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
+    get_SF_actions(layout, actions, a, b);
+
     //cout << actions.size() << endl;
     actions.sort();
 
@@ -151,6 +156,9 @@ bool recursive_create_seq(const vector<int>& s_o, stack<int>& seq,
 }
 
 void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, set<int>& blocked_stacks ){
+    assignation.clear();
+    blocked_stacks.clear();
+
     vector<int>& s_o= layout.stacks[is_o];
     vector<int> ordered_stack = s_o;
     sort(ordered_stack.begin(),ordered_stack.end(), greater<int>());
@@ -220,22 +228,59 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
 }
 
-bool SD_move(Layout& layout, int s_o){
 
-    if( layout.dismantled_stacks.find(s_o) != layout.dismantled_stacks.end() ) 
-        return false; /* the stack was dismantled before */
 
-    if (s_o==-1) {
-        //if(layout.dismantled_stacks.size()==layout.size()) layout.dismantled_stacks.clear();
+void get_SD_actions(Layout& layout, list< pair<int, pair < int, int> > >& actions){
+    int s_o=-1;
+
+    if(layout.dismantling_stack!=-1) s_o=layout.dismantling_stack; //continue dismantling
+    else{
+
         s_o = select_dismantling_stack(layout);
         if(s_o==-1){
             layout.dismantled_stacks.clear();
             s_o = select_dismantling_stack(layout);
         }
-        layout.dismantled_stacks.insert(s_o);
+        
+          
+
+        if (s_o==-1 || layout.stacks[s_o].size() == 0) return; 
+
+        if(layout.stacks[s_o].size() > layout.size()-layout.full_stacks-1)
+            smart_assignation(layout,s_o, layout.assignation, layout.blocked_stacks);
+
+    }
+
+    if (layout.stacks[s_o].size()>0 && (layout.dismantling_stack==-1 || layout.reachable_height(s_o)<Layout::H-1)){
+        int c=layout.stacks[s_o].back();
+        int s_d = -1;
+
+        if (layout.assignation.find(c)!=layout.assignation.end()) 
+            actions.push_back(make_pair(-100,make_pair(s_o,layout.assignation[c])));
+        else 
+           eval_destination_stacks(layout, s_o, actions, layout.blocked_stacks);
+
+    } 
+
+}
+
+
+bool SD_move(Layout& layout, int s_o){
+
+
+    if( layout.dismantled_stacks.find(s_o) != layout.dismantled_stacks.end() ) 
+        return false; /* the stack was dismantled before */
+
+    if (s_o==-1) {
+        s_o = select_dismantling_stack(layout);
+        if(s_o==-1){
+            layout.dismantled_stacks.clear();
+            s_o = select_dismantling_stack(layout);
+        }
     }
 
     if (s_o==-1 || layout.stacks[s_o].size() == 0) return false;
+
 
     map< int, int > assignation;
     set<int> blocked_stacks;
@@ -250,7 +295,7 @@ bool SD_move(Layout& layout, int s_o){
         int s_d = -1;
 
         if (assignation.find(c)!=assignation.end()) s_d = assignation[c];
-        else s_d = select_destination_stack(layout, s_o, blocked_stacks).first;
+        else s_d = select_destination_stack(layout, s_o, blocked_stacks);
 
         if(s_d==-1) return true;
 
@@ -262,59 +307,104 @@ bool SD_move(Layout& layout, int s_o){
 }
 
 
-
-pair<int, bool> select_destination_stack(Layout& layout, int orig, set<int> black_list, int max_pos, list<int> rank){
+void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list){
     auto& s_o = layout.stacks[orig];
     int c = s_o.back();
-    int best_eval=-1000000;
-    int best_dest=-1;
-    bool best_xg = false;
     for (int dest=0; dest <layout.size(); dest++){
         if(orig==dest || black_list.find(dest) != black_list.end() ) continue;
         auto& s_d = layout.stacks[dest];
         if(Layout::H == s_d.size()) continue;
 
         int top_d = Layout::gvalue(s_d);
-        int ev=0; bool xg=false;
+        int ev;
 
         if(layout.is_sorted(dest) && c<=top_d){//  && (s_d.size()<Layout::H-2 || layout.full_stacks < layout.size()-2) ){
             //c can be well-placed: the sorted stack minimizing top_d is preferred.
-            ev = 100000 - 100*top_d; xg=true;
-         }else if (!layout.is_sorted(dest) && c>=top_d){
+            ev = 1000000 - top_d - 100*(s_d.size()>Layout::H-2); 
+        }else if (!layout.is_sorted(dest) && c>=top_d){
             //unsorted stack with c>=top_d maximizing top_d is preferred
-            ev = top_d;
+            ev = 100000 + top_d;
         }else if(layout.is_sorted(dest)){
-            ev = -1000  + s_d.size();
+            ev = 10000  + s_d.size();
         }else{
             //unsorted with minimal number of unblocked containers
             //ev = - 10000 - 100*layout.n_unblocked(dest) + rand()%20;
-            ev = -10000  - 100*s_d.size()  - top_d;
+            ev = 10000  - 200*s_d.size()  - top_d;
         }
 
-        if (layout.H - s_d.size() > max_pos)
-            ev -= 100000;
-
-         if (ev > best_eval){
-                best_eval=ev;
-                best_dest=dest;
-                best_xg=xg;
-         }  
+        actions.push_back(make_pair (-ev, make_pair(orig,dest) ));
         
     }
 
-    return make_pair(best_dest, best_xg);
+
+}
+
+int select_destination_stack(Layout& layout, int orig, set<int> black_list){
+    list< pair<int, pair < int, int> > > actions;
+    eval_destination_stacks(layout, orig, actions, black_list);
+
+    actions.sort();
+    if (actions.size()>0)
+        return actions.front().second.second;
+    else return -1;
+}
+
+void atomic_iter_greedy(Layout& layout, double a, double b){
+    list< pair<int, pair < int, int> > > actions;
+    greedy_eval(layout, actions, a, b);
+    if(actions.size()==0) return;
+
+    int ev = actions.front().first;
+    pair<int,int> move= actions.front().second;
+
+    if(ev<0){ // Reducing stack
+        layout.dismantling_stack=move.first;
+        layout.dismantled_stacks.insert(move.first);
+    }else{ // BG move
+        layout.dismantling_stack=-1;
+        layout.assignation.clear();
+        layout.blocked_stacks.clear();
+    }
+
+    layout.move(move.first,move.second);
+    //layout.print();
 }
 
 void iter_greedy(Layout& layout, double a, double b){
-
     if (!SF_move(layout, a, b)){
-        //layout.print();
-        SD_move(layout);
-        //layout.print();
-        
+        while(true){
+            list< pair<int, pair < int, int> > > actions;
+            get_SD_actions(layout, actions);
+            actions.sort();
+            if(actions.size()>0){
+                pair<int,int> move= actions.front().second;
+                layout.move(move.first,move.second);
+
+                layout.dismantling_stack=move.first;
+                layout.dismantled_stacks.insert(move.first);
+            } else {
+                layout.dismantling_stack=-1;
+                layout.assignation.clear();
+                layout.blocked_stacks.clear();
+                break;
+            }
+        }
     }
 }
 
+// retorna (eval, (so,sd))
+void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a, double b){
+    if (layout.unsorted_stacks>0){
+        get_SF_actions(layout, actions, a, b);
+        if (actions.size()==0 || layout.dismantling_stack!=-1 ) 
+            get_SD_actions(layout, actions);
+    }
+    actions.sort();
+
+    //for (auto a:actions)
+      //  cout << a.first << ": (" << a.second.first << "," << a.second.second << ")" << endl;
+    
+}
 
 int greedy_solve(Layout& layout, int step_limit, double a, double b){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
@@ -322,7 +412,7 @@ int greedy_solve(Layout& layout, int step_limit, double a, double b){
         //layout.print(); cout << endl;
         int steps_old=layout.steps;
 
-        iter_greedy(layout, a, b);
+        atomic_iter_greedy(layout, a, b);
 
         if (layout.steps==steps_old) return -1;
     }
@@ -339,8 +429,8 @@ int lazy_greedy(Layout& layout){
 bool atomic_move(Layout& layout, int s_o){
     if (layout.stacks[s_o].size() == 0) return false;
 
-    pair<int,bool> s_dd = select_destination_stack(layout, s_o);
-    layout.move(s_o, s_dd.first);
+    int s_dd = select_destination_stack(layout, s_o);
+    layout.move(s_o, s_dd);
     return true;
 }
 
