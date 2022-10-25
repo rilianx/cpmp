@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include <list>
+#include <stack>
 #include <iterator>
 #include <cmath>
 #include <iostream>
@@ -29,12 +30,18 @@ namespace cpmp {
     int select_dismantling_stack(Layout& layout);
     int select_destination_stack(Layout& layout, int orig, set<int> black_list=set<int>());
     void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list);
+    int ev_dest_stack(Layout& layout, int dest, int c);
+    
     void iter_greedy(Layout& layout, double a=1.2, double b=0.5);
     void atomic_iter_greedy(Layout& layout, double a=1.2, double b=0.5);
     int greedy_solve(Layout& layout, int step_limit=1000, double a=1.2, double b=0.5);
     void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a=1.2, double b=0.5);
     int lazy_greedy(Layout& layout);
     bool atomic_move(Layout& layout, int s_o);
+
+    //coumpute lds[i] of the large of the longest decreasing sequence for each sequence [i..n]
+    void LDS(const std::vector<int>& v, std::vector<int>& lds);
+    bool create_seq(const vector<int>& v, vector<int>& seq, int min_sz);
 
 
 }

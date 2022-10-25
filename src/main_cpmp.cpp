@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <stack>
 #include <iterator>
 #include <cmath>
 #include <iostream>
@@ -22,6 +23,22 @@ using namespace cpmp;
 
 
 int main(int argc, char * argv[]){
+
+    /*std::vector<int> v{ 43, 41, 13, 38, 17, 20, 18 };
+    std::stack<int> seq;
+
+    create_seq(v, seq, 1);
+    for(int k:v) cout << k << "  ";
+    cout << endl;
+
+    while (!seq.empty()){
+        cout << v[seq.top()] << " ";
+        seq.pop();
+    }
+
+    cout << endl;
+
+    return 0;*/
 
     Layout::H = atoi (argv[1]);
     Layout L;

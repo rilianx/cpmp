@@ -4,6 +4,8 @@
 #include <set>
 #include <stack>
 #include <utility>
+#include <numeric>      // std::iota
+#include <algorithm> 
 
 using namespace std;
 
@@ -108,52 +110,58 @@ int select_dismantling_stack(Layout& layout){
     return s_o;
 }
 
-bool recursive_create_seq(const vector<int>& s_o, stack<int>& seq, 
-                set<int> feasible_seq, set<int>& bl){
-
-    //filtered sequence s
-    vector<int> ord_s;
-    for (auto it:s_o) if (seq.empty() || it <=seq.top()) ord_s.push_back(it);
-
-    if(ord_s.size()==0){
-        for(int k=seq.size(); k>0; k--){
-            if(feasible_seq.find(k)!=feasible_seq.end()){
-                while(seq.size()!=k) seq.pop();
-                return true;
-            }
-        }
-        return false;
+void LDS(const std::vector<int>& v, std::vector<int>& lds)
+{
+    if (v.size() == 0) // boundary case
+        return;
+ 
+    std::vector<int> tail(v.size(), 0);
+    int length = 1; // always points empty slot in tail
+    lds[v.size()-1] = length;
+ 
+    tail[0] = v[v.size()-1];
+ 
+    for (int i = v.size()-2; i >=0; i--) {
+ 
+        // Do binary search for the element in
+        // the range from begin to begin + length
+        auto b = tail.begin(), e = tail.begin() + length;
+        auto it = lower_bound(b, e, v[i]);
+ 
+        // If not present change the tail element to v[i]
+        if (it == tail.begin() + length){
+            tail[length++] = v[i];
+        }else
+            *it = v[i];
+        lds[i] = length;
     }
-       
-
-    sort(ord_s.begin(),ord_s.end(), greater<int>());
-
-    for(auto gv:ord_s){
-        if(bl.find(gv)!=bl.end()) continue;
-        bl.insert(gv);
-
-        seq.push(gv);
-
-        if (gv==s_o.back()) {
-            for(int k=seq.size(); k>0; k--){
-                if(feasible_seq.find(k)!=feasible_seq.end()){
-                    while(seq.size()!=k) seq.pop();
-                    return true;
-                }
-            }
-        }else{
-            int k=0;
-            for(;s_o[k]!=gv;k++); k++;         
-
-            if(recursive_create_seq(vector<int>(s_o.begin()+k,s_o.end()), seq, 
-                feasible_seq, bl))
-                return true;
-        }
-        seq.pop();
-    }
-    return false;
-
 }
+
+bool create_seq(const vector<int>& v, vector<int>& seq, int min_sz){
+    std::vector<int> lds(v.size());
+    LDS(v, lds);
+    //for(int k:lds) cout << k << "--";
+    //cout << endl;
+    if (lds[0]<min_sz) return false;
+
+    //idx <- argsort (v)
+
+    std::vector<int> idx(v.size());
+    // initialize original index locations
+    iota(idx.begin(), idx.end(), 0);
+    stable_sort(idx.begin(), idx.end(),
+       [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
+
+    int i_ = -1;
+    for (int i:idx){
+        if(i < i_) continue;
+        if (lds[i] + seq.size() < min_sz) continue;
+        seq.push_back(i);
+        i_=i;
+    }
+    return true;
+}
+
 
 void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, set<int>& blocked_stacks ){
     assignation.clear();
@@ -183,37 +191,70 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
     while(s.size()-ordered_items > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
         //calculate a sequence with size in [min_items, max_items]
-        set<int> feasible_seq;
+        set<int> feasible_seq; int min_sz=Layout::H;
         for(int i=0;i<layout.stacks.size();i++){
             if (available_slots[i]==0) continue;
-            for(int k=std::max(available_slots[i]-slack,1); k<=available_slots[i];k++)
-                feasible_seq.insert(k);
+            if (min_sz > max(available_slots[i]-slack,1)) 
+                    min_sz = max(available_slots[i]-slack,1);
+
+            //for(int k=std::max(available_slots[i]-slack,1); k<=available_slots[i];k++)
+              //  feasible_seq.insert(k);
         }
 
-        stack<int> seq;
+        vector<int> seq;
         set<int> bl;
 
-        bool ret=recursive_create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, feasible_seq, bl);
+        //for(int k:vector<int>(s.begin()+ordered_items,s.end())) cout << k << " ";
+        //cout << endl;
+        //cout << min_sz << endl;
+
+        bool ret = create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, min_sz);
+
+        //bool ret=recursive_create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, feasible_seq, bl);
 
         if(ret){
             //selection of destination stack
             int sz=seq.size();
             int s_d=0;
-            int min_av_sl=100;
+            int ev_s=0;
             for(int i=0;i<layout.stacks.size();i++){
                 if (available_slots[i]==0) continue;
-                if (available_slots[i] < min_av_sl 
-                        && sz>=available_slots[i]-slack && sz<=available_slots[i]){
-                    s_d=i; min_av_sl=available_slots[i];
-                }
+                if (sz < available_slots[i]-slack) continue;
+
+                int ev=0;
+                int szz = sz;
+                //prioritize available>sz
+                if (sz == available_slots[i]) ev =   1000000;
+                //else if (sz < available_slots[i])  ev= 100000*(available_slots[i]-sz);
+                
+                if (sz > available_slots[i]) szz = available_slots[i];
+                /*else{
+                    ev= sz-available_slots[i];
+                    szz = available_slots[i];
+                }*/
+
+                //cout << s[ordered_items+seq[szz-1]] << endl;
+                ev+=ev_dest_stack(layout, i, s[ordered_items+seq[szz-1]]);
+                //cout << ev << endl;
+
+
+                if(ev > ev_s){ s_d=i; ev_s=ev; }
+          
             }
 
+            
+            if (seq.size() > available_slots[s_d]) seq.resize(available_slots[s_d]);
+            sz=seq.size();
+            //cout << sz << endl;
+
             //assignation of destintation to containers
-            while(!seq.empty()){
-                s.erase(find(s.begin(),s.end(),seq.top()));
-                assignation[seq.top()]=s_d;
-                seq.pop();
+            for (int k=seq.size()-1; k>=0; k--){
+                int t=seq[k];
+                //cout << s[ordered_items+t+ordered_items] <<"," << s_d << endl;
+                assignation[s[t+ordered_items]]=s_d; // idx -> s_d
+                s.erase(s.begin()+ordered_items+t);
             }
+            
 
             slack-= (available_slots[s_d]-sz);
             available_slots[s_d]=0;
@@ -253,10 +294,12 @@ void get_SD_actions(Layout& layout, list< pair<int, pair < int, int> > >& action
 
     if (layout.stacks[s_o].size()>0 && (layout.dismantling_stack==-1 || layout.reachable_height(s_o)<Layout::H-1)){
         int c=layout.stacks[s_o].back();
+        //int i=layout.stacks[s_o].size()-1;
         int s_d = -1;
 
         if (layout.assignation.find(c)!=layout.assignation.end()) 
-            actions.push_back(make_pair(-100,make_pair(s_o,layout.assignation[c])));
+            actions.push_back(make_pair(-100,make_pair(s_o, layout.assignation[c])));
+            //actions.push_back(make_pair(-100,make_pair(s_o,layout.assignation[c])));
         else 
            eval_destination_stacks(layout, s_o, actions, layout.blocked_stacks);
 
@@ -292,6 +335,7 @@ bool SD_move(Layout& layout, int s_o){
 
     while (layout.stacks[s_o].size()>0){
         int c=layout.stacks[s_o].back();
+        //int i=layout.stacks[s_o].size()-1;
         int s_d = -1;
 
         if (assignation.find(c)!=assignation.end()) s_d = assignation[c];
@@ -306,6 +350,25 @@ bool SD_move(Layout& layout, int s_o){
     return true; //full dismantling
 }
 
+int ev_dest_stack(Layout& layout, int dest, int c){
+    int ev;
+    auto& s_d = layout.stacks[dest];
+    int top_d = Layout::gvalue(s_d);
+    if(layout.is_sorted(dest) && c<=top_d){//  && (s_d.size()<Layout::H-2 || layout.full_stacks < layout.size()-2) ){
+        //c can be well-placed: the sorted stack minimizing top_d is preferred.
+        ev = 30000 - top_d - 100*(s_d.size()>Layout::H-2); 
+    }else if (!layout.is_sorted(dest) && c>=top_d){
+        //unsorted stack with c>=top_d maximizing top_d is preferred
+        ev = 20000 + top_d;
+    }else if(layout.is_sorted(dest)){
+        ev = 10000  + s_d.size();
+    }else{
+        //unsorted with minimal number of unblocked containers
+        //ev = - 10000 - 100*layout.n_unblocked(dest) + rand()%20;
+        ev = 10000  - 200*s_d.size()  - top_d;
+    }
+    return ev;
+}
 
 void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list){
     auto& s_o = layout.stacks[orig];
@@ -315,25 +378,8 @@ void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < in
         auto& s_d = layout.stacks[dest];
         if(Layout::H == s_d.size()) continue;
 
-        int top_d = Layout::gvalue(s_d);
-        int ev;
-
-        if(layout.is_sorted(dest) && c<=top_d){//  && (s_d.size()<Layout::H-2 || layout.full_stacks < layout.size()-2) ){
-            //c can be well-placed: the sorted stack minimizing top_d is preferred.
-            ev = 1000000 - top_d - 100*(s_d.size()>Layout::H-2); 
-        }else if (!layout.is_sorted(dest) && c>=top_d){
-            //unsorted stack with c>=top_d maximizing top_d is preferred
-            ev = 100000 + top_d;
-        }else if(layout.is_sorted(dest)){
-            ev = 10000  + s_d.size();
-        }else{
-            //unsorted with minimal number of unblocked containers
-            //ev = - 10000 - 100*layout.n_unblocked(dest) + rand()%20;
-            ev = 10000  - 200*s_d.size()  - top_d;
-        }
-
+        int ev = ev_dest_stack(layout, dest, c);
         actions.push_back(make_pair (-ev, make_pair(orig,dest) ));
-        
     }
 
 
@@ -401,6 +447,7 @@ int greedy_solve(Layout& layout, int step_limit, double a, double b){
         //cout << layout.unsorted_stacks << endl;
         //layout.print(); cout << endl;
         int steps_old=layout.steps;
+
 
         atomic_iter_greedy(layout, a, b);
 
