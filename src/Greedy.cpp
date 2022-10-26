@@ -448,9 +448,8 @@ void iter_greedy(Layout& layout, double a, double b){
         move = reduction_move(layout, s_r);
         reduction=true;
     } 
-
-    if (move.first ==-1) return;
     
+    if (move.first==-1) return;
     layout.move(move.first,move.second, reduction);
     if (reduction && stop_reduction(layout,s_r)) s_r=-1;
 }
@@ -504,8 +503,11 @@ bool atomic_move(Layout& layout, int s_o){
 void reduce(Layout& layout, int s_r){
     do{
         pair<int,int> move = reduction_move(layout, s_r);
+        if (move.first==-1) break;
         layout.move(move.first,move.second, true);
+
     }while(!stop_reduction(layout,s_r));
+    layout.dismantling_stack = -1;
 
 }
 

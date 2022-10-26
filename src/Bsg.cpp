@@ -38,12 +38,16 @@ namespace cpmp {
                 
                 Layout clay = lay;
                 reduce(clay,s_o);
+                
+
                 if(clay.steps > lay.steps)
                     C.push_back(clay);
             }
 
             Layout clay = lay;
+            
             lazy_greedy(clay);
+            
             if(clay.steps > lay.steps)
                 C.push_back(clay);
             
@@ -80,6 +84,7 @@ namespace cpmp {
                 Layout gclay = clay;
 
                 int steps = greedy_solve(gclay, min_steps+10);
+
                 
                 if(steps != -1 && steps < min_steps){
                     min_steps = steps;
