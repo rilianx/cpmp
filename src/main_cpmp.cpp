@@ -24,22 +24,6 @@ using namespace cpmp;
 
 int main(int argc, char * argv[]){
 
-    /*std::vector<int> v{ 43, 41, 13, 38, 17, 20, 18 };
-    std::stack<int> seq;
-
-    create_seq(v, seq, 1);
-    for(int k:v) cout << k << "  ";
-    cout << endl;
-
-    while (!seq.empty()){
-        cout << v[seq.top()] << " ";
-        seq.pop();
-    }
-
-    cout << endl;
-
-    return 0;*/
-
     Layout::H = atoi (argv[1]);
     Layout L;
 
@@ -57,7 +41,7 @@ int main(int argc, char * argv[]){
     }
 
     double a = atof (argv[carg++]);
-    double b = atof (argv[carg++]);
+    double b = atof (argv[carg++]); // a/2
 
     int beams = atoi (argv[carg++]);
     Layout best_lay = L;
@@ -65,9 +49,7 @@ int main(int argc, char * argv[]){
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
     int type=ATOMIC_MOVE;
-    if(argc>=carg+1 && string(argv[carg++])== "--FEG");
-
-    if(argc>=carg+1 && string(argv[carg++])== "--compound_moves") type=SD_MOVE;
+    if(argc>=carg+1 && string(argv[carg++])== "--compound") type=SD_MOVE;
     
     
     

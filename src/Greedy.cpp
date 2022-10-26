@@ -269,7 +269,38 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
 }
 
+pair<int, int> reduction_move(Layout& layout, int s_r){
+    list< pair<int, pair < int, int> > > actions;
+    //cout << "0:" << s_r << endl;
+    if(s_r == -1) {
+        s_r = select_dismantling_stack(layout);
+        if(s_r == -1){ 
+            layout.dismantled_stacks.clear();
+            s_r = select_dismantling_stack(layout);
+        }
+        if(layout.stacks[s_r].size() > layout.size()-layout.full_stacks-1)
+            smart_assignation(layout,s_r, layout.assignation, layout.blocked_stacks);
+        layout.dismantling_stack=s_r;
+    }
 
+    //cout << "1:" << s_r << endl;
+    int c=layout.stacks[s_r].back();
+    int s_d = -1;
+
+    if (layout.assignation.find(c)!=layout.assignation.end()) 
+        actions.push_back(make_pair(-100,make_pair(s_r, layout.assignation[c])));
+    else 
+        eval_destination_stacks(layout, s_r, actions, layout.blocked_stacks);
+
+    if (actions.size()>0)
+        return actions.front().second;
+    else   
+        return make_pair(-1,-1);
+}
+
+bool stop_reduction(Layout& layout, int s_o){
+    return layout.stacks[s_o].size()==0 || layout.reachable_height(s_o)>=Layout::H-1;
+}
 
 void get_SD_actions(Layout& layout, list< pair<int, pair < int, int> > >& actions){
     int s_o=-1;
@@ -406,27 +437,24 @@ void atomic_iter_greedy(Layout& layout, double a, double b){
     layout.move(move.first,move.second, ev<0);
 }
 
-void iter_greedy(Layout& layout, double a, double b){
-    if (!SF_move(layout, a, b)){
-        while(true){
-            list< pair<int, pair < int, int> > > actions;
-            get_SD_actions(layout, actions);
-            actions.sort();
-            if(actions.size()>0){
-                pair<int,int> move= actions.front().second;
-                layout.move(move.first,move.second);
 
-                layout.dismantling_stack=move.first;
-                layout.dismantled_stacks.insert(move.first);
-            } else {
-                layout.dismantling_stack=-1;
-                layout.assignation.clear();
-                layout.blocked_stacks.clear();
-                break;
-            }
-        }
-    }
+
+void iter_greedy(Layout& layout, double a, double b){
+    int& s_r=layout.dismantling_stack;
+    pair<int,int> move;
+
+    bool reduction = false;
+    if(s_r !=-1 || (move = _SF_move(layout, a, b)).first ==-1 ){
+        move = reduction_move(layout, s_r);
+        reduction=true;
+    } 
+
+    if (move.first ==-1) return;
+    
+    layout.move(move.first,move.second, reduction);
+    if (reduction && stop_reduction(layout,s_r)) s_r=-1;
 }
+
 
 // retorna (eval, (so,sd))
 void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a, double b){
@@ -442,15 +470,13 @@ void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& action
     
 }
 
+
+
+
 int greedy_solve(Layout& layout, int step_limit, double a, double b){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
-        //cout << layout.unsorted_stacks << endl;
-        //layout.print(); cout << endl;
         int steps_old=layout.steps;
-
-
-        atomic_iter_greedy(layout, a, b);
-
+        iter_greedy(layout, a, b);
         if (layout.steps==steps_old) return -1;
     }
     if(layout.steps >= step_limit ) return -1;
@@ -464,11 +490,23 @@ int lazy_greedy(Layout& layout){
 }
 
 bool atomic_move(Layout& layout, int s_o){
-    if (layout.stacks[s_o].size() == 0) return false;
-
     int s_dd = select_destination_stack(layout, s_o);
+    int s_r = layout.dismantling_stack;
+
     layout.move(s_o, s_dd);
+
+    //if (s_r==s_o || s_r!=s_dd)
+    //    layout.dismantling_stack=s_r;
+
     return true;
+}
+
+void reduce(Layout& layout, int s_r){
+    do{
+        pair<int,int> move = reduction_move(layout, s_r);
+        layout.move(move.first,move.second, true);
+    }while(!stop_reduction(layout,s_r));
+
 }
 
 }
