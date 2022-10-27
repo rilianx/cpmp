@@ -15,7 +15,7 @@ namespace cpmp {
             
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)==Layout::H) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
                 
                 Layout clay = lay;
                 bool success = atomic_move(clay,s_o);
@@ -33,7 +33,7 @@ namespace cpmp {
         if(type==SD_MOVE){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)==Layout::H) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
                 
                 
                 Layout clay = lay;
