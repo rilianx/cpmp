@@ -20,9 +20,9 @@ using namespace cpmp;
 
 
 namespace cpmp {
-    enum neighbourhood{ATOMIC_MOVE, SD_MOVE} ;
+    enum neighbourhood{ATOMIC, COMPOUND, MIXED} ;
 
-    void generate_candidates(const Layout& lay, int type=ATOMIC_MOVE);
+    void generate_candidates(const Layout& lay, int type=ATOMIC);
     int BSG(Layout& layout, int w, int type, Layout& best_lay);
 
 

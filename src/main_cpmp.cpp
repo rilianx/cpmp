@@ -48,8 +48,9 @@ int main(int argc, char * argv[]){
     const clock_t begin_time = clock();
     int steps;
     //if (beams==0) steps = greedy_solve(L,1000);
-    int type=ATOMIC_MOVE;
-    if(argc>=carg+1 && string(argv[carg++])== "--compound") type=SD_MOVE;
+    int type=ATOMIC;
+    if(argc>=carg+1 && string(argv[carg++])== "--compound") type=COMPOUND;
+    else if(argc>=carg && string(argv[carg-1])== "--mixed") type=MIXED;
     
     
     
