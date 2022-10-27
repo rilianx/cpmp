@@ -42,7 +42,7 @@ namespace cpmp {
 
     //coumpute lds[i] of the large of the longest decreasing sequence for each sequence [i..n]
     void LDS(const std::vector<int>& v, std::vector<int>& lds);
-    bool create_seq(const vector<int>& v, vector<int>& seq, int min_sz);
+    bool create_seq(vector<int>& v, vector<int>& seq, int min_sz);
 
 
 }

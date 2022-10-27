@@ -23,6 +23,18 @@ using namespace cpmp;
 
 
 int main(int argc, char * argv[]){
+    /*vector<int> v = {16, 6, 5, 1, 13, 30, 14};
+    vector<int> seq;
+    for(int k:v) cout << k << " ";
+    cout << endl;
+    create_seq(v, seq, 3);
+
+    for(int k:v) cout << k << " ";
+    cout << endl;
+    for(int k:seq) cout << v[k] << "--";
+    cout << endl;
+    
+    exit(0);*/
 
     Layout::H = atoi (argv[1]);
     Layout L;

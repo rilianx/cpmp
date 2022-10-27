@@ -118,9 +118,7 @@ namespace cpmp {
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
-                
                 int steps = greedy_solve(gclay, min_steps+10);
-                
 
                 
                 if(steps != -1 && steps < min_steps){

@@ -137,30 +137,48 @@ void LDS(const std::vector<int>& v, std::vector<int>& lds)
     }
 }
 
-bool create_seq(const vector<int>& v, vector<int>& seq, int min_sz){
+int F=0;
+
+bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
+
     std::vector<int> lds(v.size());
     LDS(v, lds);
-    //for(int k:lds) cout << k << "--";
-    //cout << endl;
     if (lds[0]<min_sz) return false;
 
-    //idx <- argsort (v)
 
-    std::vector<int> idx(v.size());
-    // initialize original index locations
-    iota(idx.begin(), idx.end(), 0);
-    stable_sort(idx.begin(), idx.end(),
-       [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
 
-    int i_ = -1;
-    for (int i:idx){
-        if(i < i_) continue;
-        if (lds[i] + seq.size() < min_sz) continue;
-        seq.push_back(i);
-        i_=i;
+    bool finish = false;
+    while(!finish){
+        
+        //idx <- argsort (v)
+        std::vector<int> idx(v.size());
+        // initialize original index locations
+        iota(idx.begin(), idx.end(), 0);
+        stable_sort(idx.begin(), idx.end(),
+        [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
+
+        int i_ = -1;
+        finish=true;
+        for (int i:idx){
+            if(i < i_) continue;
+            if (lds[i] + seq.size() < min_sz) {
+                //se elimina el item y se recalcula el vector LDS
+                v.erase(v.begin()+i);
+                if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);
+                LDS(v, lds);
+                finish=false;
+                break;
+            }
+            
+            seq.push_back(i);
+            i_=i;
+        }
+               
     }
     return true;
 }
+
+
 
 
 void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, set<int>& blocked_stacks ){
@@ -206,13 +224,19 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
         //for(int k:vector<int>(s.begin()+ordered_items,s.end())) cout << k << " ";
         //cout << endl;
-        //cout << min_sz << endl;
+        if (F>=1) cout << "min_sz:" << min_sz << endl;
 
-        bool ret = create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, min_sz);
+        vector<int> ss = vector<int>(s.begin()+ordered_items,s.end());
+        bool ret = create_seq(ss, seq, min_sz);
 
         //bool ret=recursive_create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, feasible_seq, bl);
 
         if(ret){
+            if(F>=1){
+                for(int k:seq) cout << s[ordered_items+k] << " ";
+                cout << endl;
+            }
+
             //selection of destination stack
             int sz=seq.size();
             int s_d=0;
@@ -250,7 +274,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             //assignation of destintation to containers
             for (int k=seq.size()-1; k>=0; k--){
                 int t=seq[k];
-                //cout << s[ordered_items+t+ordered_items] <<"," << s_d << endl;
+                if(F>=1) cout << s[ordered_items+t+ordered_items] <<"," << s_d << endl;
                 assignation[s[t+ordered_items]]=s_d; // idx -> s_d
                 s.erase(s.begin()+ordered_items+t);
             }
@@ -261,13 +285,16 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             blocked_stacks.insert(s_d);
             
         }else return;
-
+        if(F>=1) F++;
+        if(F==5) exit(0);
     }
     
     //exit(0);
 
 
 }
+
+
 
 pair<int, int> reduction_move(Layout& layout, int s_r){
     list< pair<int, pair < int, int> > > actions;
@@ -277,8 +304,9 @@ pair<int, int> reduction_move(Layout& layout, int s_r){
             layout.dismantled_stacks.clear();
             s_r = select_dismantling_stack(layout);
         }
-        if(layout.stacks[s_r].size() > layout.size()-layout.full_stacks-1)
+        if(layout.stacks[s_r].size() > layout.size()-layout.full_stacks-1){
             smart_assignation(layout,s_r, layout.assignation, layout.blocked_stacks);
+        }
         layout.dismantling_stack=s_r;
     }
 
@@ -517,7 +545,7 @@ void reduce(Layout& layout, int s_r){
         pair<int,int> move = reduction_move(layout, s_r);
         if (move.first==-1) break;
         layout.move(move.first,move.second, true);
-        //layout.print();
+        //if(move.first==move.second) layout.print();
 
     }while(!stop_reduction(layout,s_r));    
     layout.dismantling_stack = -1;
