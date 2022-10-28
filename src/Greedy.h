@@ -29,6 +29,8 @@ namespace cpmp {
     bool SD_move(Layout& layout, int stack=-1);
     int select_dismantling_stack(Layout& layout);
     int select_destination_stack(Layout& layout, int orig, set<int> black_list=set<int>());
+    int get_destination_stack(Layout& layout, int orig, set<int> black_list);
+    
     void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list);
     int ev_dest_stack(Layout& layout, int dest, int c);
     

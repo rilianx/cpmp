@@ -43,12 +43,12 @@ int main(int argc, char * argv[]){
     if(string(argv[carg++])== "--random") {
         srand(time(NULL));
         cout << "Generating a random instance: S="<<argv[carg] << ", N="<<argv[carg+1] << ", H="<<Layout::H << endl;
-        Layout::save_moves = true;
+        //Layout::save_moves = true;
         L=Layout(atoi(argv[carg]), atoi(argv[carg+1]));
         L.print();
         carg+=2;
     }else{
-        Layout::save_moves = true;
+        //Layout::save_moves = true;
         L=Layout(argv[2]);
     }
 

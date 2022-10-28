@@ -21,6 +21,39 @@ bool SF_move(Layout& layout, double a, double b){
     return true;
 }
 
+pair<int,int> best_BG_move(Layout& layout, double a, double b){
+    int best_ev = 100;
+    pair<int,int> best_move = make_pair(-1,-1);
+    for(int i=0; i<layout.size(); i++){
+        int h = layout.stacks[i].size();
+        if(layout.is_sorted(i) && h < Layout::H){          
+            //stacks with H-1 containers are not considered
+            //if there are 3 or less not-full stacks
+            double avH=layout.total_elements/layout.size();
+
+            if(h>=Layout::H-1 && a*avH >= layout.size()-layout.full_stacks ) continue;
+            if(h>=Layout::H-1 && layout.size()-layout.full_stacks < 3 ) continue;
+
+
+            int top=Layout::gvalue(layout.stacks[i]);
+            for (int k=0; k<layout.size(); k++){
+                h = layout.stacks[k].size();
+                if (k!=i && (!layout.is_sorted(k))  || (h>=Layout::H &&  b*avH >= layout.size()-layout.full_stacks ) ||  
+                (h>=Layout::H && layout.size()-layout.full_stacks < 3 ) ) {
+                    if (layout.stacks[k].back() <= top) {
+                        int ev = top - layout.stacks[k].back();
+                        if(best_ev>ev){
+                            best_ev=ev;
+                            best_move = make_pair(k,i);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return best_move;    
+}
+
 void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions, double a, double b ){
 
     for(int i=0; i<layout.size(); i++){
@@ -46,7 +79,6 @@ void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions
         }
     } 
 }
-
 
 pair<int,int> _SF_move(Layout& layout, double a, double b){
     list <pair <int, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
@@ -298,6 +330,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
 pair<int, int> reduction_move(Layout& layout, int s_r){
     list< pair<int, pair < int, int> > > actions;
+    pair < int, int> move = make_pair(-1,-1);
     if(s_r == -1) {
         s_r = select_dismantling_stack(layout);
         if(s_r == -1){ 
@@ -314,16 +347,14 @@ pair<int, int> reduction_move(Layout& layout, int s_r){
     int c=layout.stacks[s_r].back();
     int s_d = -1;
 
-    if (layout.assignation.find(c)!=layout.assignation.end()) 
-        actions.push_back(make_pair(-100,make_pair(s_r, layout.assignation[c])));
-    else 
-        eval_destination_stacks(layout, s_r, actions, layout.blocked_stacks);
+    if (layout.assignation.find(c)!=layout.assignation.end())
+        move = make_pair(s_r, layout.assignation[c]);
+    else {
+        int s_d=get_destination_stack(layout, s_r, layout.blocked_stacks);
+        if (s_d!=-1) move = make_pair(s_r, s_d);
+    }
     
-    actions.sort();
-    if (actions.size()>0)
-        return actions.front().second;
-    else   
-        return make_pair(-1,-1);
+    return move;
 }
 
 bool stop_reduction(Layout& layout, int s_o){
@@ -399,7 +430,7 @@ bool SD_move(Layout& layout, int s_o){
         int s_d = -1;
 
         if (assignation.find(c)!=assignation.end()) s_d = assignation[c];
-        else s_d = select_destination_stack(layout, s_o, blocked_stacks);
+        else s_d = get_destination_stack(layout, s_o, blocked_stacks);
 
         if(s_d==-1) return true;
 
@@ -429,6 +460,24 @@ int ev_dest_stack(Layout& layout, int dest, int c){
     }
     //cout << dest << ":" << ev << endl;
     return ev;
+}
+
+int get_destination_stack(Layout& layout, int orig, set<int> black_list){
+    auto& s_o = layout.stacks[orig];
+    int c = s_o.back();
+    int best_ev=100; int best_stack=-1;
+    for (int dest=0; dest <layout.size(); dest++){
+        if(orig==dest || black_list.find(dest) != black_list.end() ) continue;
+        auto& s_d = layout.stacks[dest];
+        if(Layout::H == s_d.size()) continue;
+
+        int ev = ev_dest_stack(layout, dest, c);
+        if(best_ev<ev){
+            best_ev=ev;
+            best_stack = dest;
+        }
+    }
+    return best_stack;
 }
 
 void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list){
@@ -472,7 +521,7 @@ void iter_greedy(Layout& layout, double a, double b){
     pair<int,int> move;
 
     bool reduction = false;
-    if(s_r !=-1 || (move = _SF_move(layout, a, b)).first ==-1 ){
+    if(s_r !=-1 || (move = best_BG_move(layout, a, b)).first ==-1 ){
         //if(s_r==-1) cout << "reduction" << endl;
         move = reduction_move(layout, s_r);
         reduction=true;

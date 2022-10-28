@@ -36,13 +36,9 @@ class Layout {
         map< int, int > assignation;
         set<int> blocked_stacks;
        
-        list <int> bsg_moves;
         list < pair <int, int> > moves;
-        
         set <int> dismantled_stacks;
 
-        multimap <int ,int> gv2index; //for the beamsearch (type:SDPP)
-        int last_sd =-1; /*last dismantled stack*/
 
         static bool save_moves;
 
