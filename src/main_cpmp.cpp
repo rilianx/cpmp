@@ -66,9 +66,10 @@ int main(int argc, char * argv[]){
     
     
     
-    if (beams==0)
+    if (beams==0){
         steps = greedy_solve(L,1000,a,b);
-    else 
+        
+    }else 
         steps = BSG(L, beams, type, best_lay);
     if (steps==-1) {
         steps=1000;

@@ -94,26 +94,6 @@ pair<int,int> _SF_move(Layout& layout, double a, double b){
 }
 
 
-pair<int,int> search_highest(Layout& layout, int lb, int ub, int s_d){
-    pair<int,int>  ret = make_pair(-1,-1);
-    for (int pos=-1; pos>-10; pos--){
-        int max_c = 0;
-        for (int s=0; s<layout.size(); s++){
-            if (s==s_d) continue;
-            vector<int>& ss = layout.stacks[s];
-            if (ss.size() < -pos) continue;
-            int c=ss[ss.size()+pos];
-            if (c>=lb && c <=ub && c>max_c){
-                if (layout.sorted_elements[s] <= ss.size()+pos && layout.capacity(s,s_d) >= -pos-1){
-                    max_c=c;
-                    ret = make_pair(s,max_c);
-                }
-            }
-        }
-        if (ret.first != -1) return ret;
-    }
-    return ret;
-}
 
 
 int select_dismantling_stack(Layout& layout){
@@ -169,7 +149,6 @@ void LDS(const std::vector<int>& v, std::vector<int>& lds)
     }
 }
 
-int F=0;
 
 bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
 
@@ -243,11 +222,10 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
     //vector<int> s=s_o;
     vector<int> s2(s_o.begin()+ordered_items,s_o.end());
 
-    int items_to_reduce = s2.size() ;
 
-    while( s2.size()>0 && items_to_reduce > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
+    while( s2.size()>0 && items > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
         //calculate a sequence with size in [min_items, max_items]
-        set<int> feasible_seq; int min_sz=Layout::H;
+        int min_sz=Layout::H;
         for(int i=0;i<layout.stacks.size();i++){
             if (available_slots[i]==0) continue;
             if (min_sz > max(available_slots[i]-slack,1)) 
@@ -255,9 +233,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
         }
 
         vector<int> seq;
-        set<int> bl;
 
-        //vector<int> ss = vector<int>(s.begin()+ordered_items,s.end());
         bool ret = create_seq(s2, seq, min_sz);
 
         if(ret){
@@ -289,8 +265,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             //assignation of destintation to containers
             for (int k=seq.size()-1; k>=0; k--){
                 assignation[seq[k]]=s_d; // c -> s_d
-                //s.erase(s.begin()+ordered_items+t);
-                items_to_reduce--;
+                items--;
             }
             
 
@@ -446,7 +421,7 @@ int ev_dest_stack(Layout& layout, int dest, int c){
 int get_destination_stack(Layout& layout, int orig, set<int> black_list){
     auto& s_o = layout.stacks[orig];
     int c = s_o.back();
-    int best_ev=100; int best_stack=-1;
+    int best_ev=0; int best_stack=-1;
     for (int dest=0; dest <layout.size(); dest++){
         if(orig==dest || black_list.find(dest) != black_list.end() ) continue;
         auto& s_d = layout.stacks[dest];
@@ -539,7 +514,7 @@ int greedy_solve(Layout& layout, int step_limit, double a, double b){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
         int steps_old=layout.steps;
         iter_greedy(layout, a, b);
-       // layout.print();
+        //layout.print();
         if (layout.steps==steps_old) return -1;
     }
     if(layout.steps >= step_limit ) return -1;
