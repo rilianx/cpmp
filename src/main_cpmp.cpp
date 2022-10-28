@@ -23,15 +23,15 @@ using namespace cpmp;
 
 
 int main(int argc, char * argv[]){
-    /*vector<int> v = {16, 6, 5, 1, 13, 30, 14};
+    /*vector<int> v = {16, 6, 5, 1, 13, 30, 14, 7, 8};
     vector<int> seq;
     for(int k:v) cout << k << " ";
     cout << endl;
-    create_seq(v, seq, 3);
+    create_seq(v, seq, 4);
 
     for(int k:v) cout << k << " ";
     cout << endl;
-    for(int k:seq) cout << v[k] << "--";
+    for(int k:seq) cout << k << "--";
     cout << endl;
     
     exit(0);*/

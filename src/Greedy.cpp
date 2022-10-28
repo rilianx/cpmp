@@ -190,19 +190,23 @@ bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
         [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
 
         int i_ = -1;
-        finish=true;
-        for (int i:idx){
+        finish=true; int k=0;
+        for (int j=0; j<idx.size(); j++){
+            int i=idx[j];
             if(i < i_) continue;
             if (lds[i] + seq.size() < min_sz) {
                 //se elimina el item y se recalcula el vector LDS
-                v.erase(v.begin()+i);
-                if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);
+                v.erase(v.begin()+i-k);
+                //if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);
                 LDS(v, lds);
                 finish=false;
                 break;
             }
             
-            seq.push_back(i);
+            seq.push_back(v[i-k]);
+            v.erase(v.begin()+i-k);
+            k++;
+
             i_=i;
         }
                
@@ -234,41 +238,29 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
         if (i==is_o) continue;
         available_slots[i] = Layout::H-layout.stacks[i].size();
         total_slots+=available_slots[i];
-        //cout << "available_slots[" << i << "]:" << available_slots[i] <<endl;
     }
     int slack=total_slots-items;
-    vector<int> s=s_o;
+    //vector<int> s=s_o;
+    vector<int> s2(s_o.begin()+ordered_items,s_o.end());
 
-    while(s.size()-ordered_items > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
+    int items_to_reduce = s2.size() ;
+
+    while( s2.size()>0 && items_to_reduce > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
         //calculate a sequence with size in [min_items, max_items]
         set<int> feasible_seq; int min_sz=Layout::H;
         for(int i=0;i<layout.stacks.size();i++){
             if (available_slots[i]==0) continue;
             if (min_sz > max(available_slots[i]-slack,1)) 
                     min_sz = max(available_slots[i]-slack,1);
-
-            //for(int k=std::max(available_slots[i]-slack,1); k<=available_slots[i];k++)
-              //  feasible_seq.insert(k);
         }
 
         vector<int> seq;
         set<int> bl;
 
-        //for(int k:vector<int>(s.begin()+ordered_items,s.end())) cout << k << " ";
-        //cout << endl;
-        if (F>=1) cout << "min_sz:" << min_sz << endl;
-
-        vector<int> ss = vector<int>(s.begin()+ordered_items,s.end());
-        bool ret = create_seq(ss, seq, min_sz);
-
-        //bool ret=recursive_create_seq(vector<int>(s.begin()+ordered_items,s.end()), seq, feasible_seq, bl);
+        //vector<int> ss = vector<int>(s.begin()+ordered_items,s.end());
+        bool ret = create_seq(s2, seq, min_sz);
 
         if(ret){
-            if(F>=1){
-                for(int k:seq) cout << s[ordered_items+k] << " ";
-                cout << endl;
-            }
-
             //selection of destination stack
             int sz=seq.size();
             int s_d=0;
@@ -281,34 +273,24 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
                 int szz = sz;
                 //prioritize available>sz
                 if (sz == available_slots[i]) ev =   1000000;
-                //else if (sz < available_slots[i])  ev= 100000*(available_slots[i]-sz);
                 
                 if (sz > available_slots[i]) szz = available_slots[i];
-                /*else{
-                    ev= sz-available_slots[i];
-                    szz = available_slots[i];
-                }*/
-
-                //cout << s[ordered_items+seq[szz-1]] << endl;
-                ev+=ev_dest_stack(layout, i, s[ordered_items+seq[szz-1]]);
-                //cout << ev << endl;
-
+                ev+=ev_dest_stack(layout, i, seq[szz-1]);
 
                 if(ev > ev_s){ s_d=i; ev_s=ev; }
           
             }
 
-            
+            //truncate seq
             if (seq.size() > available_slots[s_d]) seq.resize(available_slots[s_d]);
+
             sz=seq.size();
-            //cout << sz << endl;
 
             //assignation of destintation to containers
             for (int k=seq.size()-1; k>=0; k--){
-                int t=seq[k];
-                if(F>=1) cout << s[ordered_items+t+ordered_items] <<"," << s_d << endl;
-                assignation[s[t+ordered_items]]=s_d; // idx -> s_d
-                s.erase(s.begin()+ordered_items+t);
+                assignation[seq[k]]=s_d; // c -> s_d
+                //s.erase(s.begin()+ordered_items+t);
+                items_to_reduce--;
             }
             
 
@@ -317,8 +299,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             blocked_stacks.insert(s_d);
             
         }else return;
-        if(F>=1) F++;
-        if(F==5) exit(0);
+
     }
     
     //exit(0);
