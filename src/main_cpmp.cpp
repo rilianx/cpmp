@@ -23,11 +23,12 @@ using namespace cpmp;
 
 
 int main(int argc, char * argv[]){
-    /*vector<int> v = {16, 6, 5, 1, 13, 30, 14, 7, 8};
+    
+    /*vector<int> v = {48,47 ,50, 16, 6, 5, 1, 13, 30, 14};
     vector<int> seq;
     for(int k:v) cout << k << " ";
     cout << endl;
-    create_seq(v, seq, 4);
+    create_seq(v, seq, 1);
 
     for(int k:v) cout << k << " ";
     cout << endl;

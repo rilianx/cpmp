@@ -30,7 +30,7 @@ namespace cpmp {
     int select_dismantling_stack(Layout& layout);
     int select_destination_stack(Layout& layout, int orig, set<int> black_list=set<int>());
     int get_destination_stack(Layout& layout, int orig, set<int> black_list);
-    
+
     void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list);
     int ev_dest_stack(Layout& layout, int dest, int c);
     
@@ -44,7 +44,7 @@ namespace cpmp {
 
     //coumpute lds[i] of the large of the longest decreasing sequence for each sequence [i..n]
     void LDS(const std::vector<int>& v, std::vector<int>& lds);
-    bool create_seq(vector<int>& v, vector<int>& seq, int min_sz);
+    bool create_seq(vector<int> v, vector<int>& seq, int min_sz);
 
 
 }

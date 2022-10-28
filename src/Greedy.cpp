@@ -105,9 +105,6 @@ int select_dismantling_stack(Layout& layout){
         //if (layout.is_sorted(i) && layout.capacity(i)<=2*layout.stacks[i].size()+1) continue;
         //if (layout.is_sorted(i) && layout.stacks[i].size()>2) continue;
 
-        //double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
-
-
         double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
 
         double ev = 0.0;
@@ -153,7 +150,7 @@ void LDS(const std::vector<int>& v, std::vector<int>& lds)
 }
 
 
-bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
+bool create_seq(vector<int> v, vector<int>& seq, int min_sz){
 
     std::vector<int> lds(v.size());
     LDS(v, lds);
@@ -162,6 +159,7 @@ bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
 
 
     bool finish = false;
+
     while(!finish){
         
         //idx <- argsort (v)
@@ -172,23 +170,20 @@ bool create_seq(vector<int>& v, vector<int>& seq, int min_sz){
         [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
 
         int i_ = -1;
-        finish=true; int k=0;
+        finish=true;
         for (int j=0; j<idx.size(); j++){
             int i=idx[j];
             if(i < i_) continue;
             if (lds[i] + seq.size() < min_sz) {
                 //se elimina el item y se recalcula el vector LDS
-                v.erase(v.begin()+i-k);
-                //if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);
+                v.erase(v.begin()+i);
+                if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);
                 LDS(v, lds);
                 finish=false;
                 break;
             }
             
-            seq.push_back(v[i-k]);
-            v.erase(v.begin()+i-k);
-            k++;
-
+            seq.push_back(v[i]);
             i_=i;
         }
                
@@ -225,7 +220,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
     //vector<int> s=s_o;
     vector<int> s2(s_o.begin()+ordered_items,s_o.end());
 
-
+    
     while( s2.size()>0 && items > layout.size()-layout.full_stacks-blocked_stacks.size()-1){
         //calculate a sequence with size in [min_items, max_items]
         int min_sz=Layout::H;
@@ -269,6 +264,8 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             //assignation of destintation to containers
             for (int k=seq.size()-1; k>=0; k--){
                 assignation[seq[k]]=s_d; // c -> s_d
+                remove(s2.begin(),s2.end(),seq[k]);
+                s2.pop_back();
                 items--;
             }
             
@@ -277,7 +274,10 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             available_slots[s_d]=0;
             blocked_stacks.insert(s_d);
             
-        }else return;
+        }else {
+            return;
+        }
+        
 
     }
     
@@ -487,12 +487,15 @@ void iter_greedy(Layout& layout, double a, double b){
         reduction=true;
     } 
     
+
     if (move.first==-1) return;
     layout.move(move.first,move.second, reduction);
     if (reduction && stop_reduction(layout,s_r)) {
         //cout << "end reduction" << endl;
         s_r=-1;
+        
     }
+
     
 }
 
