@@ -22,7 +22,7 @@ bool SF_move(Layout& layout, double a, double b){
 }
 
 pair<int,int> best_BG_move(Layout& layout, double a, double b){
-    int best_ev = 100;
+    int best_ev = 1000;
     pair<int,int> best_move = make_pair(-1,-1);
     for(int i=0; i<layout.size(); i++){
         int h = layout.stacks[i].size();
@@ -108,10 +108,10 @@ int select_dismantling_stack(Layout& layout){
         double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
 
         double ev = 0.0;
-        if (layout.is_sorted(i))
+        /*if (layout.is_sorted(i))
             ev = 100000 - 1000*layout.stacks[i].size() - 100 - prom ;
-        else
-            ev = 100000 - 1000*layout.stacks[i].size() + 100 + prom ;
+        else*/
+            ev = 100000 - 1000*layout.stacks[i].size() - layout.sorted_elements[i];
     
         if (ev > best_ev){
             best_ev = ev;
@@ -248,9 +248,10 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
                 int ev=0;
                 int szz = sz;
                 //prioritize available>sz
-                if (sz == available_slots[i]) ev =   1000000;
+                if (sz == available_slots[i]) ev = 1000000;
                 
                 if (sz > available_slots[i]) szz = available_slots[i];
+
                 ev+=ev_dest_stack(layout, i, seq[szz-1]);
 
                 if(ev > ev_s){ s_d=i; ev_s=ev; }
@@ -514,7 +515,7 @@ int greedy_solve(Layout& layout, int step_limit, double a, double b){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
         int steps_old=layout.steps;
         iter_greedy(layout, a, b);
-        //layout.print();
+        
         if (layout.steps==steps_old) return -1;
     }
     if(layout.steps >= step_limit ) return -1;
