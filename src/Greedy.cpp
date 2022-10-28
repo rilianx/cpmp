@@ -108,10 +108,10 @@ int select_dismantling_stack(Layout& layout){
         double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
 
         double ev = 0.0;
-        if (layout.is_sorted(i))
+        /*if (layout.is_sorted(i))
             ev = 100000 - 1000*layout.stacks[i].size() - prom ;
-        else
-            ev = 100000 - 1000*layout.stacks[i].size() + prom;
+        else*/
+            ev = 100000 - 1000*layout.stacks[i].size() - layout.sorted_elements[i];
     
         if (ev > best_ev){
             best_ev = ev;
