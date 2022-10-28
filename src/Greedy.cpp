@@ -105,13 +105,19 @@ int select_dismantling_stack(Layout& layout){
         //if (layout.is_sorted(i) && layout.capacity(i)<=2*layout.stacks[i].size()+1) continue;
         //if (layout.is_sorted(i) && layout.stacks[i].size()>2) continue;
 
-        double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
+        //double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
+
+        double pond=0.0;
+        for(int k=0; k<layout.stacks[i].size(); k++)
+            pond+=layout.stacks[i][k]*(k+1);
+
+        //double prom = (double) layout.sum_stack(i) / (double) layout.stacks[i].size();
 
         double ev = 0.0;
         /*if (layout.is_sorted(i))
             ev = 100000 - 1000*layout.stacks[i].size() - 100 - prom ;
         else*/
-            ev = 100000 - 1000*layout.stacks[i].size() - layout.sorted_elements[i];
+            ev = 100000 - 5000*layout.stacks[i].size() - 100*layout.sorted_elements[i] + pond;
     
         if (ev > best_ev){
             best_ev = ev;
