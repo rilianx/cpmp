@@ -154,7 +154,7 @@ namespace cpmp {
                     best_lay = gclay;
                 }
 
-                if (steps == -1) steps = clay.steps + 30 + 2*clay.unsorted_elements;
+                if (steps == -1) steps = gclay.steps + 30 + 2*clay.unsorted_elements;
                 
 
                 double eval = steps;
