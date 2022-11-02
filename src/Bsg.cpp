@@ -11,7 +11,7 @@ using namespace cpmp;
 namespace cpmp {
     void generate_candidates(const Layout& lay, list<Layout>& C, int type, int k){
         
-        if(type==ATOMIC){
+        if(type==ATOMIC || type==MIXED){
             
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
@@ -51,14 +51,9 @@ namespace cpmp {
                 }
             }
 
-            Layout clay = lay;
-            iter_greedy(clay);
-
-            if(clay.steps > lay.steps)
-                C.push_back(clay);
         }
 
-        else if(type==COMPOUND){
+        if(type==COMPOUND || type==MIXED){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
                 if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
@@ -72,57 +67,18 @@ namespace cpmp {
             }
 
             Layout clay = lay;
-            
-          
             lazy_greedy(clay);
            
-            
             if(clay.steps > lay.steps)
                 C.push_back(clay);
-            
-            
-            clay = lay;
-            iter_greedy(clay);
-            
-            if(clay.steps > lay.steps)
-                C.push_back(clay);
-            
-
+                        
         }
 
-        else if(type==MIXED){
-            for(int s_o=0; s_o < lay.size(); s_o++){
-                if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
-                
-                Layout clay = lay;
-                pair<int, int> move = atomic_move(clay,s_o);
-                clay.move(move.first, move.second);
-                C.push_back(clay);
-                
-                clay = lay;
-                reduce(clay,s_o);
+        Layout clay = lay;
+        iter_greedy(clay);
 
-                if(clay.steps > lay.steps)
-                    C.push_back(clay);
-
-            }
-            Layout clay = lay;
-            
-          
-            lazy_greedy(clay);
-           
-            
-            if(clay.steps > lay.steps)
-                C.push_back(clay);
-            
-            
-            clay = lay;
-            iter_greedy(clay);
-            
-            if(clay.steps > lay.steps)
-                C.push_back(clay);
-        }
+        if(clay.steps > lay.steps)
+            C.push_back(clay);
 
         
     }
@@ -146,16 +102,14 @@ namespace cpmp {
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
-                //int steps = greedy_solve(gclay, min_steps+10);
-                int steps = greedy_solve(gclay,min(clay.steps + 30, min_steps+10));
+                int steps = greedy_solve(gclay, min_steps+10);
+                
+
                 
                 if(steps != -1 && steps < min_steps){
                     min_steps = steps;
                     best_lay = gclay;
                 }
-
-                if (steps == -1) steps = gclay.steps + 30 + 2*clay.unsorted_elements;
-                
 
                 double eval = steps;
                 if(type==COMPOUND) eval -= 0.01*clay.steps; //shorter is better

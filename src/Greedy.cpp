@@ -476,7 +476,7 @@ void atomic_iter_greedy(Layout& layout, double a, double b){
 
 
 
-void iter_greedy(Layout& layout, double a, double b){
+bool iter_greedy(Layout& layout, double a, double b){
     int& s_r=layout.dismantling_stack;
     pair<int,int> move;
 
@@ -488,7 +488,7 @@ void iter_greedy(Layout& layout, double a, double b){
     } 
     
 
-    if (move.first==-1) return;
+    if (move.first==-1) return false;
     layout.move(move.first,move.second, reduction);
     if (reduction && stop_reduction(layout,s_r)) {
         layout.dismantled_stacks.insert(s_r);
@@ -496,6 +496,8 @@ void iter_greedy(Layout& layout, double a, double b){
         s_r=-1;
         
     }
+
+    return reduction;
 
     
 }
@@ -516,6 +518,18 @@ void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& action
 }
 
 
+int greedy_solve2(Layout& layout, int step_limit, double a, double b){
+    bool red = false;
+    while (layout.unsorted_stacks>0 && (layout.steps < step_limit || !red)){
+        int steps_old=layout.steps;
+        red = iter_greedy(layout, a, b);
+        
+        if (layout.steps==steps_old) return -1;
+    }
+    if(layout.steps >= step_limit ) return -1;
+
+    return layout.steps;
+}
 
 
 int greedy_solve(Layout& layout, int step_limit, double a, double b){

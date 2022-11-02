@@ -34,9 +34,10 @@ namespace cpmp {
     void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list);
     int ev_dest_stack(const Layout& layout, int dest, int c);
     
-    void iter_greedy(Layout& layout, double a=1.2, double b=0.6);
+    bool iter_greedy(Layout& layout, double a=1.2, double b=0.6);
     void atomic_iter_greedy(Layout& layout, double a=1.2, double b=0.6);
     int greedy_solve(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
+    int greedy_solve2(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
     void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a=1.2, double b=0.6);
     int lazy_greedy(Layout& layout);
     pair<int,int> atomic_move(Layout& layout, int s_o);
