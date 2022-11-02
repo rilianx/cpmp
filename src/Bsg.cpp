@@ -112,8 +112,8 @@ namespace cpmp {
                 }
 
                 double eval = steps;
-                if(type==COMPOUND) eval -= 0.01*clay.steps; //shorter is better
-                else eval += 0.01*clay.steps; 
+                eval -= 0.01*clay.steps; //shorter is better
+                //else eval += 0.01*clay.steps; 
                 if(steps !=-1 && lb < steps) N.insert(make_pair(eval, &clay));
             }
 
