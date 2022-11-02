@@ -54,7 +54,8 @@ int main(int argc, char * argv[]){
     }
 
     double a = atof (argv[carg++]);
-    double b = atof (argv[carg++]); // a/2
+    double b = a/2;
+    int k = atoi (argv[carg++]); 
 
     int beams = atoi (argv[carg++]);
     Layout best_lay = L;
@@ -71,7 +72,7 @@ int main(int argc, char * argv[]){
         steps = greedy_solve(L,1000,a,b);
         
     }else 
-        steps = BSG(L, beams, type, best_lay);
+        steps = BSG(L, beams, type, best_lay, k);
     if (steps==-1) {
         steps=1000;
         cout << argv[2] << endl;

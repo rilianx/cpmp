@@ -38,12 +38,13 @@ namespace cpmp {
                     
                     Layout clay = lay;
                     clay.move(s_o,s_d);
+                    /*
                     if(sorted_o || !clay.is_sorted(s_d)){ // not BG_move
                         if(!stop_reduction(clay,s_d)){
                             clay.dismantling_stack=i;
                             //clay.dismantled_stacks.insert(i);
                         }
-                    }
+                    }*/
 
 
                     C.push_back(clay);
@@ -126,7 +127,7 @@ namespace cpmp {
         
     }
 
-    int BSG(Layout& layout, int w, int type, Layout& best_lay){
+    int BSG(Layout& layout, int w, int type, Layout& best_lay, int k){
         int min_steps=200;
         if (layout.unsorted_elements==0) return 0;
 
@@ -136,7 +137,7 @@ namespace cpmp {
             list<Layout> C;
            
             for(Layout& lay:S) 
-                generate_candidates(lay, C, type);
+                generate_candidates(lay, C, type, k);
             
 
             multimap< double, Layout* > N; //new level of the beam search tree
