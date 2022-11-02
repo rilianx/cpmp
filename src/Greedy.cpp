@@ -491,6 +491,7 @@ void iter_greedy(Layout& layout, double a, double b){
     if (move.first==-1) return;
     layout.move(move.first,move.second, reduction);
     if (reduction && stop_reduction(layout,s_r)) {
+        layout.dismantled_stacks.insert(s_r);
         //cout << "end reduction" << endl;
         s_r=-1;
         

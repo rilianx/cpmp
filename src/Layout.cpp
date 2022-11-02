@@ -62,7 +62,7 @@ int Layout::move(int i, int j, bool reducing){
 
     if(reducing){ 
         dismantling_stack=i;
-        dismantled_stacks.insert(i);
+        //dismantled_stacks.insert(i);
     }else{ // BG move
         dismantling_stack=-1;
         assignation.clear();
