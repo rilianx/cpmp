@@ -401,7 +401,7 @@ bool SD_move(Layout& layout, int s_o){
     return true; //full dismantling
 }
 
-int ev_dest_stack(Layout& layout, int dest, int c){
+int ev_dest_stack(const Layout& layout, int dest, int c){
     int ev;
     auto& s_d = layout.stacks[dest];
     int top_d = Layout::gvalue(s_d);
@@ -534,17 +534,34 @@ int lazy_greedy(Layout& layout){
     return layout.steps;
 }
 
-bool atomic_move(Layout& layout, int s_o){
+pair<int,int> atomic_move(Layout& layout, int s_o){
     int s_dd = select_destination_stack(layout, s_o);
-    int s_r = layout.dismantling_stack;
+    return make_pair(s_o,s_dd);
 
-    layout.move(s_o, s_dd);
-
-    //if (s_r==s_o || s_r!=s_dd)
-    //    layout.dismantling_stack=s_r;
-
-    return true;
 }
+
+
+
+list <pair <int,int> > atomic_moves(Layout& layout, int s_o, int k){
+    list< pair<int, pair < int, int> > > actions;
+
+    eval_destination_stacks(layout, s_o, actions, set<int>());
+    
+    list< pair < int, int> > moves;
+    actions.sort();
+    moves.push_back(actions.front().second);
+
+    actions.pop_front();
+    while(actions.size()>0&&moves.size()<k){
+        if (actions.front().first > 20000)
+            moves.push_back(actions.front().second);
+        else break;
+        moves.pop_front();
+    }
+    return moves;
+}
+
+
 
 void reduce(Layout& layout, int s_r){
     if(layout.dismantling_stack != s_r){

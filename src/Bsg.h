@@ -22,7 +22,7 @@ using namespace cpmp;
 namespace cpmp {
     enum neighbourhood{ATOMIC, COMPOUND, MIXED} ;
 
-    void generate_candidates(const Layout& lay, int type=ATOMIC);
+    void generate_candidates(const Layout& lay,  list<Layout>& C, int type=ATOMIC, int k=2);
     int BSG(Layout& layout, int w, int type, Layout& best_lay);
 
 

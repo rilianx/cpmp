@@ -9,18 +9,34 @@ using namespace std;
 using namespace cpmp;
 
 namespace cpmp {
-    void generate_candidates(const Layout& lay, list<Layout>& C, int type){
+    void generate_candidates(const Layout& lay, list<Layout>& C, int type, int k){
         
         if(type==ATOMIC){
             
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
                 if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
+
                 
-                Layout clay = lay;
-                bool success = atomic_move(clay,s_o);
-                if (success)
+                list< pair<int, int> > dests;
+
+                for(int s_d=0; s_d < lay.size(); s_d++){
+                    if (lay.stacks[s_d].size() == Layout::H) continue;
+                    if (s_o==s_d) continue;
+
+                    int ev = ev_dest_stack(lay, s_d, lay.stacks[s_o].back());
+
+                    dests.push_back(make_pair (-ev, s_d ));
+                }
+
+                dests.sort();
+                
+                for(int i=0; i<k && dests.size()>0; i++){
+                    int s_d = dests.front().second; dests.pop_front();
+                    Layout clay = lay;
+                    clay.move(s_o,s_d);
                     C.push_back(clay);
+                }
             }
 
             Layout clay = lay;
@@ -68,9 +84,9 @@ namespace cpmp {
                 if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
                 
                 Layout clay = lay;
-                bool success = atomic_move(clay,s_o);
-                if (success)
-                    C.push_back(clay);
+                pair<int, int> move = atomic_move(clay,s_o);
+                clay.move(move.first, move.second);
+                C.push_back(clay);
                 
                 clay = lay;
                 reduce(clay,s_o);
