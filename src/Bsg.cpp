@@ -15,7 +15,7 @@ namespace cpmp {
             
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
 
                 
                 list< pair<int, int> > dests;
@@ -57,7 +57,7 @@ namespace cpmp {
         if(type==COMPOUND || type==MIXED){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
                 
                 
                 Layout clay = lay;
