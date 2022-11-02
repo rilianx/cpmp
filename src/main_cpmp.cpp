@@ -65,6 +65,9 @@ int main(int argc, char * argv[]){
     int type=ATOMIC;
     if(argc>=carg+1 && string(argv[carg++])== "--compound") type=COMPOUND;
     else if(argc>=carg && string(argv[carg-1])== "--mixed") type=MIXED;
+
+    int seed = atoi (argv[carg++]);
+    srand(seed);
     
     
     

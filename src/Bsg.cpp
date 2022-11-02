@@ -114,7 +114,7 @@ namespace cpmp {
                 }
 
                 double eval = steps;
-                eval -= 0.01*clay.steps; //shorter is better
+                eval += (((double)rand()/(double)RAND_MAX)-0.5)*0.1;
                 //else eval += 0.01*clay.steps; 
                 if(steps !=-1 && lb < steps) N.insert(make_pair(eval, &clay));
             }
