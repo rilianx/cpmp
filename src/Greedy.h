@@ -42,6 +42,7 @@ namespace cpmp {
     pair<int,int> atomic_move(Layout& layout, int s_o);
     list <pair <int,int> > atomic_moves(Layout& layout, int s_o, int k=1);
     void reduce(Layout& layout, int s_r);
+    bool stop_reduction(Layout& layout, int s_o);
 
     //coumpute lds[i] of the large of the longest decreasing sequence for each sequence [i..n]
     void LDS(const std::vector<int>& v, std::vector<int>& lds);

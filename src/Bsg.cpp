@@ -30,11 +30,22 @@ namespace cpmp {
                 }
 
                 dests.sort();
-                
+
+                bool sorted_o=lay.is_sorted(s_o);
                 for(int i=0; i<k && dests.size()>0; i++){
                     int s_d = dests.front().second; dests.pop_front();
+
+                    
                     Layout clay = lay;
                     clay.move(s_o,s_d);
+                    if(sorted_o || !clay.is_sorted(s_d)){ // not BG_move
+                        if(!stop_reduction(clay,s_d)){
+                            clay.dismantling_stack=i;
+                            //clay.dismantled_stacks.insert(i);
+                        }
+                    }
+
+
                     C.push_back(clay);
                 }
             }
