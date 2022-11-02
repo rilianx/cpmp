@@ -15,7 +15,7 @@ namespace cpmp {
             
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H) continue;
 
                 
                 list< pair<int, int> > dests;
@@ -24,7 +24,8 @@ namespace cpmp {
                     if (lay.stacks[s_d].size() == Layout::H) continue;
                     if (s_o==s_d) continue;
 
-                    int ev = ev_dest_stack(lay, s_d, lay.stacks[s_o].back());
+                    double ev = ev_dest_stack(lay, s_d, lay.stacks[s_o].back());
+                    ev += (double) rand()/(double) RAND_MAX;
 
                     dests.push_back(make_pair (-ev, s_d ));
                 }
@@ -56,7 +57,7 @@ namespace cpmp {
         if(type==COMPOUND || type==MIXED){
             for(int s_o=0; s_o < lay.size(); s_o++){
                 if (lay.stacks[s_o].size() == 0) continue;
-                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H-1) continue;
+                if (lay.is_sorted(s_o) && lay.reachable_height(s_o)>=Layout::H) continue;
                 
                 
                 Layout clay = lay;
