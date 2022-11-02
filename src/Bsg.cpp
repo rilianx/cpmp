@@ -38,8 +38,8 @@ namespace cpmp {
                     
                     Layout clay = lay;
                     clay.move(s_o,s_d);
-                    /*
-                    if(sorted_o || !clay.is_sorted(s_d)){ // not BG_move
+                    
+                    /*if(sorted_o || !clay.is_sorted(s_d)){ // not BG_move
                         if(!stop_reduction(clay,s_d)){
                             clay.dismantling_stack=i;
                             //clay.dismantled_stacks.insert(i);
@@ -146,13 +146,16 @@ namespace cpmp {
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
-                int steps = greedy_solve(gclay, min_steps+10);
-
+                //int steps = greedy_solve(gclay, min_steps+10);
+                int steps = greedy_solve(gclay,min(clay.steps + 30, min_steps+10));
                 
                 if(steps != -1 && steps < min_steps){
                     min_steps = steps;
                     best_lay = gclay;
                 }
+
+                if (steps == -1) steps = clay.steps + 30 + 2*clay.unsorted_elements;
+                
 
                 double eval = steps;
                 if(type==COMPOUND) eval -= 0.01*clay.steps; //shorter is better

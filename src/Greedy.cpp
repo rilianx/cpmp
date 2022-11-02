@@ -578,9 +578,11 @@ void reduce(Layout& layout, int s_r){
         //if(move.first==move.second) layout.print();
 
     }while(!stop_reduction(layout,s_r));    
+    layout.dismantled_stacks.insert(s_r);
     layout.dismantling_stack = -1;
     layout.assignation.clear();
     layout.blocked_stacks.clear();
+    
 
 }
 
