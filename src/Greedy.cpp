@@ -54,7 +54,7 @@ pair<int,int> best_BG_move(Layout& layout, double a, double b){
     return best_move;    
 }
 
-void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions, double a, double b ){
+void get_SF_actions(Layout& layout, list <pair <double, pair <int,int> > >& actions, double a, double b ){
 
     for(int i=0; i<layout.size(); i++){
         int h = layout.stacks[i].size();
@@ -81,7 +81,7 @@ void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions
 }
 
 pair<int,int> _SF_move(Layout& layout, double a, double b){
-    list <pair <int, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
+    list <pair <double, pair <int,int> > > actions; /* (eval, (s_o,s_d))*/
     get_SF_actions(layout, actions, a, b);
 
     //cout << actions.size() << endl;
@@ -238,19 +238,19 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
             //selection of destination stack
             int sz=seq.size();
             int s_d=0;
-            int ev_s=0;
+            double ev_s=0;
             for(int i=0;i<layout.stacks.size();i++){
                 if (available_slots[i]==0) continue;
                 if (sz < available_slots[i]-slack) continue;
 
-                int ev=0;
+                double ev=0;
                 int szz = sz;
                 //prioritize available>sz
                 if (sz == available_slots[i]) ev = 1000000;
                 
                 if (sz > available_slots[i]) szz = available_slots[i];
 
-                ev+=ev_dest_stack(layout, i, seq[szz-1]);
+                ev+= (double)ev_dest_stack(layout, i, seq[szz-1])  + (double)rand()/(double)RAND_MAX;
 
                 if(ev > ev_s){ s_d=i; ev_s=ev; }
           
@@ -321,7 +321,7 @@ bool stop_reduction(Layout& layout, int s_o){
     return layout.stacks[s_o].size()==0 || layout.reachable_height(s_o)>=Layout::H-1;
 }
 
-void get_SD_actions(Layout& layout, list< pair<int, pair < int, int> > >& actions){
+void get_SD_actions(Layout& layout, list< pair<double, pair < int, int> > >& actions){
     int s_o=-1;
 
     if(layout.dismantling_stack!=-1) s_o=layout.dismantling_stack; //continue dismantling
@@ -425,13 +425,13 @@ int ev_dest_stack(const Layout& layout, int dest, int c){
 int get_destination_stack(Layout& layout, int orig, set<int> black_list){
     auto& s_o = layout.stacks[orig];
     int c = s_o.back();
-    int best_ev=0; int best_stack=-1;
+    double best_ev=0; int best_stack=-1;
     for (int dest=0; dest <layout.size(); dest++){
         if(orig==dest || black_list.find(dest) != black_list.end() ) continue;
         auto& s_d = layout.stacks[dest];
         if(Layout::H == s_d.size()) continue;
 
-        int ev = ev_dest_stack(layout, dest, c);
+        double ev = (double) ev_dest_stack(layout, dest, c) + (double)rand()/(double)RAND_MAX;
         if(best_ev<ev){
             best_ev=ev;
             best_stack = dest;
@@ -440,7 +440,7 @@ int get_destination_stack(Layout& layout, int orig, set<int> black_list){
     return best_stack;
 }
 
-void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list){
+void eval_destination_stacks(Layout& layout, int orig, list< pair<double, pair < int, int> > >& actions, set<int> black_list){
     auto& s_o = layout.stacks[orig];
     int c = s_o.back();
     for (int dest=0; dest <layout.size(); dest++){
@@ -448,13 +448,13 @@ void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < in
         auto& s_d = layout.stacks[dest];
         if(Layout::H == s_d.size()) continue;
 
-        int ev = ev_dest_stack(layout, dest, c);
+        double ev = (double)ev_dest_stack(layout, dest, c)  + (double)rand()/(double)RAND_MAX;;
         actions.push_back(make_pair (-ev, make_pair(orig,dest) ));
     }
 }
 
 int select_destination_stack(Layout& layout, int orig, set<int> black_list){
-    list< pair<int, pair < int, int> > > actions;
+    list< pair<double, pair < int, int> > > actions;
     eval_destination_stacks(layout, orig, actions, black_list);
 
     actions.sort();
@@ -464,7 +464,7 @@ int select_destination_stack(Layout& layout, int orig, set<int> black_list){
 }
 
 void atomic_iter_greedy(Layout& layout, double a, double b){
-    list< pair<int, pair < int, int> > > actions;
+    list< pair<double, pair < int, int> > > actions;
     greedy_eval(layout, actions, a, b);
     if(actions.size()==0) return;
 
@@ -504,7 +504,7 @@ bool iter_greedy(Layout& layout, double a, double b){
 
 
 // retorna (eval, (so,sd))
-void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a, double b){
+void greedy_eval(Layout& layout, list < pair < double , pair <int, int> > >& actions, double a, double b){
     if (layout.unsorted_stacks>0){
         get_SF_actions(layout, actions, a, b);
         if (actions.size()==0 || layout.dismantling_stack!=-1 ) 
@@ -558,7 +558,7 @@ pair<int,int> atomic_move(Layout& layout, int s_o){
 
 
 list <pair <int,int> > atomic_moves(Layout& layout, int s_o, int k){
-    list< pair<int, pair < int, int> > > actions;
+    list< pair<double, pair < int, int> > > actions;
 
     eval_destination_stacks(layout, s_o, actions, set<int>());
     

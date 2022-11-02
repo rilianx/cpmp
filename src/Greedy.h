@@ -24,21 +24,21 @@ using namespace cpmp;
 namespace cpmp {
 
     bool SF_move(Layout& layout, double a=1.2, double b=0.6);
-    void get_SF_actions(Layout& layout, list <pair <int, pair <int,int> > >& actions, double a=1.2, double b=0.6);
+    void get_SF_actions(Layout& layout, list <pair <double, pair <int,int> > >& actions, double a=1.2, double b=0.6);
     pair<int,int> _SF_move(Layout& layout, double a=1.2, double b=0.6);
     bool SD_move(Layout& layout, int stack=-1);
     int select_dismantling_stack(Layout& layout);
     int select_destination_stack(Layout& layout, int orig, set<int> black_list=set<int>());
     int get_destination_stack(Layout& layout, int orig, set<int> black_list);
 
-    void eval_destination_stacks(Layout& layout, int orig, list< pair<int, pair < int, int> > >& actions, set<int> black_list);
+    void eval_destination_stacks(Layout& layout, int orig, list< pair<double, pair < int, int> > >& actions, set<int> black_list);
     int ev_dest_stack(const Layout& layout, int dest, int c);
     
     bool iter_greedy(Layout& layout, double a=1.2, double b=0.6);
     void atomic_iter_greedy(Layout& layout, double a=1.2, double b=0.6);
     int greedy_solve(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
     int greedy_solve2(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
-    void greedy_eval(Layout& layout, list < pair < int , pair <int, int> > >& actions, double a=1.2, double b=0.6);
+    void greedy_eval(Layout& layout, list < pair < double , pair <int, int> > >& actions, double a=1.2, double b=0.6);
     int lazy_greedy(Layout& layout);
     pair<int,int> atomic_move(Layout& layout, int s_o);
     list <pair <int,int> > atomic_moves(Layout& layout, int s_o, int k=1);
