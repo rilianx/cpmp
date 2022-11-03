@@ -107,7 +107,7 @@ namespace cpmp {
 
             multimap< double, Layout* > N; //new level of the beam search tree
             for(Layout& clay : C){
-                if(clay.steps >= min_steps) continue;
+                if(clay.steps + clay.unsorted_elements >= min_steps) continue;
                 int lb = clay.steps + clay.unsorted_elements; /* lower bound for the state*/
                 Layout gclay = clay;
 
