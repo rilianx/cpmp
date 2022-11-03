@@ -40,12 +40,20 @@ namespace cpmp {
                     Layout clay = lay;
                     clay.move(s_o,s_d);
                     
+                    
                     /*if(sorted_o || !clay.is_sorted(s_d)){ // not BG_move
-                        if(!stop_reduction(clay,s_d)){
-                            clay.dismantling_stack=i;
+                        if(!stop_reduction(clay,s_o)){
+                            clay.dismantling_stack=s_o;
+                            clay.dismantled_stacks.erase(s_o);
                             //clay.dismantled_stacks.insert(i);
+                        }else{
+                            clay.dismantling_stack=-1;
+                            clay.assignation.clear();
+                            clay.blocked_stacks.clear();
+                            clay.dismantled_stacks.insert(s_o);
                         }
                     }*/
+                    
 
 
                     C.push_back(clay);
@@ -105,6 +113,7 @@ namespace cpmp {
 
                 int old_steps = gclay.steps;
                 int steps = greedy_solve(gclay, min_steps+10);
+
                 if(steps <=old_steps) continue;
                 
 
