@@ -34,15 +34,15 @@ namespace cpmp {
     void eval_destination_stacks(Layout& layout, int orig, list< pair<double, pair < int, int> > >& actions, set<int> black_list);
     int ev_dest_stack(const Layout& layout, int dest, int c);
     
-    bool iter_greedy(Layout& layout, double a=1.2, double b=0.6);
+    bool iter_greedy(Layout& layout, double a=1.2, double b=0.6, bool assign=true);
     void atomic_iter_greedy(Layout& layout, double a=1.2, double b=0.6);
-    int greedy_solve(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
-    int greedy_solve2(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6);
+    int greedy_solve(Layout& layout, int step_limit=1000, double a=1.2, double b=0.6, bool assign=true);
     void greedy_eval(Layout& layout, list < pair < double , pair <int, int> > >& actions, double a=1.2, double b=0.6);
     int lazy_greedy(Layout& layout);
     pair<int,int> atomic_move(Layout& layout, int s_o);
     list <pair <int,int> > atomic_moves(Layout& layout, int s_o, int k=1);
     void reduce(Layout& layout, int s_r);
+    pair<int, int> reduction_move(Layout& layout, int s_r, bool assign=true);
     bool stop_reduction(Layout& layout, int s_o);
 
     //coumpute lds[i] of the large of the longest decreasing sequence for each sequence [i..n]

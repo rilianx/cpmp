@@ -75,12 +75,12 @@ namespace cpmp {
                     C.push_back(clay);
             }
 
-            Layout clay = lay;
+            /*Layout clay = lay;
             lazy_greedy(clay);
            
             if(clay.steps > lay.steps)
                 C.push_back(clay);
-                        
+            */       
         }
 
         Layout clay = lay;

@@ -56,6 +56,7 @@ int main(int argc, char * argv[]){
     double a = atof (argv[carg++]);
     double b = a/2;
     int k = atoi (argv[carg++]); 
+    bool assign=true;
 
     int beams = atoi (argv[carg++]);
     Layout best_lay = L;
@@ -65,6 +66,7 @@ int main(int argc, char * argv[]){
     int type=ATOMIC;
     if(argc>=carg+1 && string(argv[carg++])== "--compound") type=COMPOUND;
     else if(argc>=carg && string(argv[carg-1])== "--mixed") type=MIXED;
+    else if(argc>=carg && string(argv[carg-1])== "--no-assignment") assign=false;
 
     int seed = atoi (argv[carg++]);
     srand(seed);
@@ -72,7 +74,7 @@ int main(int argc, char * argv[]){
     
     
     if (beams==0){
-        steps = greedy_solve(L,1000,a,b);
+        steps = greedy_solve(L,1000,a,b,assign);
         
     }else 
         steps = BSG(L, beams, type, best_lay, k);

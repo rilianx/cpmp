@@ -288,7 +288,7 @@ void smart_assignation(Layout& layout, int is_o, map< int, int >& assignation, s
 
 
 
-pair<int, int> reduction_move(Layout& layout, int s_r){
+pair<int, int> reduction_move(Layout& layout, int s_r, bool assign){
     list< pair<int, pair < int, int> > > actions;
     pair < int, int> move = make_pair(-1,-1);
     if(s_r == -1) {
@@ -297,9 +297,9 @@ pair<int, int> reduction_move(Layout& layout, int s_r){
             layout.dismantled_stacks.clear();
             s_r = select_dismantling_stack(layout);
         }
-        if(layout.stacks[s_r].size() > layout.size()-layout.full_stacks-1){
+        if(assign && layout.stacks[s_r].size() > layout.size()-layout.full_stacks-1)
             smart_assignation(layout,s_r, layout.assignation, layout.blocked_stacks);
-        }
+        
         layout.dismantling_stack=s_r;
     }
 
@@ -476,14 +476,14 @@ void atomic_iter_greedy(Layout& layout, double a, double b){
 
 
 
-bool iter_greedy(Layout& layout, double a, double b){
+bool iter_greedy(Layout& layout, double a, double b, bool assign){
     int& s_r=layout.dismantling_stack;
     pair<int,int> move;
 
     bool reduction = false;
     if(s_r !=-1 || (move = best_BG_move(layout, a, b)).first ==-1 ){
         //if(s_r==-1) cout << "reduction" << endl;
-        move = reduction_move(layout, s_r);
+        move = reduction_move(layout, s_r, assign);
         reduction=true;
     } 
     
@@ -518,24 +518,10 @@ void greedy_eval(Layout& layout, list < pair < double , pair <int, int> > >& act
 }
 
 
-int greedy_solve2(Layout& layout, int step_limit, double a, double b){
-    bool red = false;
-    while (layout.unsorted_stacks>0 && (layout.steps < step_limit || !red)){
-        int steps_old=layout.steps;
-        red = iter_greedy(layout, a, b);
-        
-        if (layout.steps==steps_old) return -1;
-    }
-    if(layout.steps >= step_limit ) return -1;
-
-    return layout.steps;
-}
-
-
-int greedy_solve(Layout& layout, int step_limit, double a, double b){
+int greedy_solve(Layout& layout, int step_limit, double a, double b, bool assign){
     while (layout.unsorted_stacks>0 && layout.steps < step_limit){
         int steps_old=layout.steps;
-        iter_greedy(layout, a, b);
+        iter_greedy(layout, a, b, assign);
         
         if (layout.steps==steps_old) return -1;
     }
