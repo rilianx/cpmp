@@ -175,6 +175,7 @@ bool create_seq(vector<int> v, vector<int>& seq, int min_sz){
             int i=idx[j];
             if(i < i_) continue;
             if (lds[i] + seq.size() < min_sz) {
+                continue;
                 //se elimina el item y se recalcula el vector LDS
                 v.erase(v.begin()+i);
                 if (i_!=-1) v.erase(v.begin(),v.begin()+i_+1);

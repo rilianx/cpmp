@@ -33,12 +33,12 @@ namespace cpmp {
                 dests.sort();
 
                 bool sorted_o=lay.is_sorted(s_o);
-                auto it=dests.begin();
-                advance(it,rand() % min(k,(int)dests.size()));
+                //auto it=dests.begin();
+                //advance(it,rand() % min(k,(int)dests.size()));
 
-                //for(int i=0; i<k && dests.size()>0; i++){
-                    //int s_d = dests.front().second; dests.pop_front();
-                    int s_d = it->second;
+                for(int i=0; i<k && dests.size()>0; i++){
+                    int s_d = dests.front().second; dests.pop_front();
+                    //int s_d = it->second;
                     
                     Layout clay = lay;
                     clay.move(s_o,s_d);
@@ -60,7 +60,7 @@ namespace cpmp {
 
 
                     C.push_back(clay);
-                //}
+                }
             }
 
         }
