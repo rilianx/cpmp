@@ -24,7 +24,7 @@ using namespace cpmp;
 
 int main(int argc, char * argv[]){
     
-    /*vector<int> v = {48,47 ,50, 16, 6, 5, 1, 13, 30, 14};
+    vector<int> v = {48,47 ,50, 16, 6, 5, 1, 13, 30, 14};
     vector<int> seq;
     for(int k:v) cout << k << " ";
     cout << endl;
@@ -35,7 +35,7 @@ int main(int argc, char * argv[]){
     for(int k:seq) cout << k << "--";
     cout << endl;
     
-    exit(0);*/
+    exit(0);
 
     Layout::H = atoi (argv[1]);
     Layout L;

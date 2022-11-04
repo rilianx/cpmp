@@ -143,9 +143,12 @@ void LDS(const std::vector<int>& v, std::vector<int>& lds)
         // If not present change the tail element to v[i]
         if (it == tail.begin() + length){
             tail[length++] = v[i];
-        }else
+            lds[i]=length;
+        }else{
             *it = v[i];
-        lds[i] = length;
+            lds[i] = it-b+1;
+        }
+        //lds[i] = length;
     }
 }
 
