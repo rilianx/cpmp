@@ -34,7 +34,7 @@ namespace cpmp {
 
                 bool sorted_o=lay.is_sorted(s_o);
                 auto it=dests.begin();
-                advance(it,rand() % max(k,(int)dests.size()));
+                advance(it,rand() % min(k,(int)dests.size()));
 
                 //for(int i=0; i<k && dests.size()>0; i++){
                     //int s_d = dests.front().second; dests.pop_front();
