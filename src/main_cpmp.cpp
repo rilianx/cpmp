@@ -55,7 +55,9 @@ int main(int argc, char * argv[]){
 
     double a = atof (argv[carg++]);
     double b = a/2;
-    int k = 0; //atoi (argv[carg++]); 
+    int k = 0; //atoi (argv[carg++]);
+    int  max_steps = atoi(argv[carg++]); 
+    
     bool assign=true;
 
     int beams = atoi (argv[carg++]);
@@ -67,20 +69,21 @@ int main(int argc, char * argv[]){
     if(argc>=carg+1 && string(argv[carg++])== "--compound") type=COMPOUND;
     else if(argc>=carg && string(argv[carg-1])== "--mixed") type=MIXED;
     else if(argc>=carg && string(argv[carg-1])== "--no-assignment") assign=false;
+    
 
     int seed = atoi (argv[carg++]);
     srand(seed);
     
     
     if (beams==0){
-        steps = greedy_solve(L,1000,a,b,assign);
+        steps = greedy_solve(L,max_steps,a,b,assign);
         
     }else 
         steps = BSG(L, beams, type, best_lay, k);
-    if (steps==-1) {
+    /*if (steps==-1) {
         steps=1000;
         cout << argv[2] << endl;
-    }
+    }*/
     cout << steps <<"\t" << (float( clock () - begin_time ) /  CLOCKS_PER_SEC) << endl;
 
     //L.print();
