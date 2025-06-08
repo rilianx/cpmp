@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
 
     double a = atof (argv[carg++]);
     double b = a/2;
-    int k = atoi (argv[carg++]); 
+    int k = 0; //atoi (argv[carg++]); 
     bool assign=true;
 
     int beams = atoi (argv[carg++]);
@@ -70,7 +70,6 @@ int main(int argc, char * argv[]){
 
     int seed = atoi (argv[carg++]);
     srand(seed);
-    
     
     
     if (beams==0){
